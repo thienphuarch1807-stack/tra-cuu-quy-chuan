@@ -1,0 +1,3514 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trắc Nghiệm Quy Chuẩn Xây Dựng</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+  :root {
+    --navy: #0d1b2a;
+    --blue: #1a3a5c;
+    --accent: #f0a500;
+    --accent2: #e05c3a;
+    --green: #1db87c;
+    --red: #e53e3e;
+    --light: #f4f6fb;
+    --card: #ffffff;
+    --border: #dde3f0;
+    --text: #1a2340;
+    --muted: #6b7a99;
+    --shadow: 0 4px 24px rgba(13,27,42,0.10);
+    --radius: 14px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Be Vietnam Pro', sans-serif;
+    background: var(--light);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .header {
+    background: linear-gradient(135deg, var(--navy) 0%, var(--blue) 100%);
+    color: white;
+    padding: 28px 20px 24px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    top: -40px; right: -40px;
+    width: 200px; height: 200px;
+    border-radius: 50%;
+    background: rgba(240,165,0,0.12);
+    pointer-events: none;
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--accent);
+    color: var(--navy);
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  .header h1 {
+    font-size: clamp(18px, 5vw, 26px);
+    font-weight: 800;
+    line-height: 1.25;
+    margin-bottom: 6px;
+  }
+  .header p {
+    font-size: 13px;
+    opacity: 0.75;
+    font-weight: 500;
+  }
+
+  /* TAB NAV */
+  .tab-nav {
+    background: var(--navy);
+    display: flex;
+    max-width: 720px;
+    margin: 0 auto;
+    border-bottom: 2px solid rgba(255,255,255,0.08);
+  }
+  .tab-btn {
+    flex: 1;
+    padding: 13px 8px;
+    background: none;
+    border: none;
+    color: rgba(255,255,255,0.5);
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s;
+    border-bottom: 3px solid transparent;
+    letter-spacing: 0.2px;
+  }
+  .tab-btn.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+  .tab-btn:hover:not(.active) { color: rgba(255,255,255,0.8); }
+
+  /* CONTAINER */
+  .container { max-width: 720px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  /* ── STUDY MODE ─────────────────────────────────── */
+  #studyScreen { display: none; }
+
+  .study-controls {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .study-search {
+    flex: 1;
+    min-width: 160px;
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 14px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.18s;
+  }
+  .study-search:focus { border-color: var(--accent); }
+  .study-search::placeholder { color: var(--muted); font-weight: 500; }
+  .study-filter {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--text);
+    background: white;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.18s;
+  }
+  .study-filter:focus { border-color: var(--accent); }
+  .study-count {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    white-space: nowrap;
+    padding: 6px 10px;
+    background: var(--light);
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .study-count span { color: var(--accent2); font-family: 'JetBrains Mono', monospace; }
+
+  .study-list { display: flex; flex-direction: column; gap: 12px; }
+
+  .study-card {
+    background: white;
+    border-radius: var(--radius);
+    border: 1.5px solid var(--border);
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    animation: slideIn 0.2s ease;
+  }
+  .study-card-head {
+    padding: 14px 16px 12px;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+  }
+  .study-card-head:hover { background: rgba(240,165,0,0.03); }
+  .study-num {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    background: var(--light);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    border: 1px solid var(--border);
+  }
+  .study-card-body { flex: 1; }
+  .study-tag-sm {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    color: var(--accent2);
+    background: rgba(224,92,58,0.1);
+    padding: 2px 8px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  .study-question {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.5;
+  }
+  .study-toggle {
+    flex-shrink: 0;
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    color: var(--muted);
+    transition: transform 0.2s, background 0.2s;
+    border: 1px solid var(--border);
+  }
+  .study-card.open .study-toggle {
+    transform: rotate(180deg);
+    background: var(--accent);
+    color: white;
+    border-color: var(--accent);
+  }
+  .study-answer {
+    display: none;
+    border-top: 1.5px solid var(--border);
+    padding: 14px 16px;
+    background: linear-gradient(to bottom, #f8fff8, #ffffff);
+  }
+  .study-card.open .study-answer { display: block; animation: fadeIn 0.2s ease; }
+
+  .answer-correct {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+  .answer-badge {
+    flex-shrink: 0;
+    background: var(--green);
+    color: white;
+    font-size: 10px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 20px;
+    white-space: nowrap;
+    margin-top: 1px;
+  }
+  .answer-text {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1.5;
+  }
+  .all-options {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 10px;
+  }
+  .opt-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.5;
+    padding: 6px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--light);
+  }
+  .opt-row.is-correct {
+    background: rgba(29,184,124,0.08);
+    border-color: var(--green);
+    color: var(--text);
+  }
+  .opt-lbl {
+    flex-shrink: 0;
+    width: 20px; height: 20px;
+    border-radius: 5px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px;
+    font-weight: 800;
+    background: var(--border);
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .opt-row.is-correct .opt-lbl {
+    background: var(--green);
+    color: white;
+  }
+  .study-ex {
+    background: rgba(26,58,92,0.06);
+    border-left: 3px solid var(--blue);
+    border-radius: 0 8px 8px 0;
+    padding: 10px 12px;
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.65;
+  }
+  .study-ex strong { color: var(--blue); }
+
+  .no-results {
+    text-align: center;
+    padding: 50px 20px;
+    color: var(--muted);
+  }
+  .no-results .icon { font-size: 48px; margin-bottom: 12px; }
+  .no-results p { font-size: 14px; font-weight: 600; }
+
+  /* START SCREEN */
+  #startScreen {
+    text-align: center;
+    padding: 30px 0;
+  }
+  .start-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 30px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 20px;
+  }
+  .start-icon {
+    font-size: 52px;
+    margin-bottom: 14px;
+  }
+  .start-card h2 {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 10px;
+  }
+  .start-card p {
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.7;
+    margin-bottom: 6px;
+  }
+  .info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    margin: 20px 0;
+  }
+  .info-item {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 14px 12px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .info-item .val {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--navy);
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .info-item .lbl {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-top: 2px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .topics {
+    text-align: left;
+    background: var(--light);
+    border-radius: 10px;
+    padding: 16px;
+    border: 1px solid var(--border);
+    margin: 18px 0 0;
+  }
+  .topics h3 { font-size: 13px; font-weight: 700; color: var(--navy); margin-bottom: 10px; }
+  .topic-tag {
+    display: inline-block;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--blue);
+    padding: 4px 10px;
+    margin: 3px 3px 3px 0;
+  }
+  .btn-start {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-top: 20px;
+    letter-spacing: 0.5px;
+    box-shadow: 0 4px 16px rgba(240,165,0,0.3);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .btn-start:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(240,165,0,0.4); }
+  .btn-start:active { transform: translateY(0); }
+
+  /* QUIZ SCREEN */
+  #quizScreen { display: none; }
+
+  /* PROGRESS */
+  .progress-bar-wrap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .progress-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+  }
+  .q-counter {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--navy);
+  }
+  .q-counter span {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent2);
+    font-size: 15px;
+  }
+  .score-live {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--green);
+    background: rgba(29,184,124,0.1);
+    padding: 4px 10px;
+    border-radius: 20px;
+  }
+  .progress-track {
+    height: 6px;
+    background: var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
+    border-radius: 10px;
+    transition: width 0.4s ease;
+  }
+
+  /* QUESTION CARD */
+  .question-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 22px 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 14px;
+    animation: slideIn 0.3s ease;
+  }
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .q-tag {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    color: var(--accent2);
+    background: rgba(224,92,58,0.1);
+    padding: 3px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  .question-text {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--navy);
+    line-height: 1.55;
+  }
+
+  /* OPTIONS */
+  .options-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .option-btn {
+    width: 100%;
+    background: white;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 16px;
+    text-align: left;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.18s;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    line-height: 1.5;
+  }
+  .option-btn:hover:not(:disabled) {
+    border-color: var(--accent);
+    background: rgba(240,165,0,0.06);
+    transform: translateX(3px);
+  }
+  .option-label {
+    flex-shrink: 0;
+    width: 26px; height: 26px;
+    border-radius: 8px;
+    background: var(--light);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--muted);
+    font-family: 'JetBrains Mono', monospace;
+    transition: all 0.18s;
+  }
+  .option-btn.correct {
+    border-color: var(--green);
+    background: rgba(29,184,124,0.08);
+  }
+  .option-btn.correct .option-label {
+    background: var(--green);
+    color: white;
+  }
+  .option-btn.wrong {
+    border-color: var(--red);
+    background: rgba(229,62,62,0.07);
+  }
+  .option-btn.wrong .option-label {
+    background: var(--red);
+    color: white;
+  }
+  .option-btn.disabled-dim {
+    opacity: 0.45;
+  }
+  .option-btn:disabled { cursor: default; }
+
+  /* EXPLANATION */
+  .explanation {
+    background: rgba(29,184,124,0.08);
+    border: 1.5px solid var(--green);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-top: 14px;
+    font-size: 13px;
+    color: var(--text);
+    line-height: 1.65;
+    display: none;
+  }
+  .explanation.show { display: block; animation: fadeIn 0.25s ease; }
+  .explanation strong { color: var(--green); }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+  /* NAV BUTTONS */
+  .nav-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+  }
+  .btn-next {
+    flex: 1;
+    background: var(--navy);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    transition: background 0.18s, transform 0.12s;
+    display: none;
+  }
+  .btn-next.show { display: block; }
+  .btn-next:hover { background: var(--blue); transform: translateY(-1px); }
+
+  /* RESULT SCREEN */
+  #resultScreen { display: none; }
+  .result-card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 32px 24px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    text-align: center;
+    margin-bottom: 18px;
+  }
+  .result-emoji { font-size: 60px; margin-bottom: 12px; }
+  .result-score-big {
+    font-size: 52px;
+    font-weight: 800;
+    color: var(--navy);
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+  .result-score-big span { font-size: 28px; color: var(--muted); }
+  .result-label {
+    font-size: 18px;
+    font-weight: 800;
+    margin-bottom: 4px;
+  }
+  .result-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 22px;
+  }
+  .result-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    margin-top: 20px;
+  }
+  .stat-box {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 14px 8px;
+    border: 1px solid var(--border);
+  }
+  .stat-val {
+    font-size: 22px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .stat-val.g { color: var(--green); }
+  .stat-val.r { color: var(--red); }
+  .stat-val.b { color: var(--blue); }
+  .stat-lbl { font-size: 11px; color: var(--muted); font-weight: 600; margin-top: 2px; }
+
+  /* Review list */
+  .review-section { margin-top: 8px; }
+  .review-section h3 {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 12px;
+    padding: 0 4px;
+  }
+  .review-item {
+    background: white;
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    border: 1.5px solid var(--border);
+    font-size: 13px;
+    text-align: left;
+  }
+  .review-item.correct-item { border-color: var(--green); }
+  .review-item.wrong-item { border-color: var(--red); }
+  .review-q { font-weight: 700; color: var(--navy); margin-bottom: 6px; line-height: 1.5; }
+  .review-ans { font-size: 12px; color: var(--muted); }
+  .review-ans .c { color: var(--green); font-weight: 700; }
+  .review-ans .w { color: var(--red); font-weight: 700; }
+
+  .btn-restart {
+    width: 100%;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 16px;
+    font-size: 16px;
+    font-weight: 800;
+    cursor: pointer;
+    margin-bottom: 12px;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    box-shadow: 0 4px 16px rgba(240,165,0,0.25);
+    transition: transform 0.15s;
+  }
+  .btn-restart:hover { transform: translateY(-2px); }
+
+  /* MARK ICONS */
+  .mark { font-size: 16px; margin-left: auto; flex-shrink: 0; }
+
+  /* ── STATS SCREEN ──────────────────────────────────── */
+  .stats-header-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+  .stats-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 16px;
+    gap: 12px;
+  }
+  .stats-title {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .stats-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 500;
+  }
+  .btn-clear-stats {
+    flex-shrink: 0;
+    background: #fff5f5;
+    color: var(--red);
+    border: 1.5px solid #ffd0d0;
+    border-radius: 10px;
+    padding: 7px 14px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    transition: background 0.15s;
+  }
+  .btn-clear-stats:hover { background: #ffe0e0; }
+
+  .stats-summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+  }
+  @media (max-width: 480px) {
+    .stats-summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  .sum-box {
+    background: var(--light);
+    border-radius: 10px;
+    padding: 13px 8px;
+    text-align: center;
+    border: 1px solid var(--border);
+  }
+  .sum-val {
+    font-size: 22px;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--navy);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+  .sum-val.accent { color: var(--accent2); }
+  .sum-val.green { color: var(--green); }
+  .sum-val.blue { color: var(--blue); }
+  .sum-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--muted);
+    letter-spacing: 0.3px;
+  }
+
+  .stats-filter-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+  .stats-period-btn {
+    flex: 1;
+    padding: 10px 8px;
+    border-radius: 10px;
+    border: 2px solid var(--border);
+    background: white;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    cursor: pointer;
+    font-family: 'Be Vietnam Pro', sans-serif;
+    transition: all 0.15s;
+  }
+  .stats-period-btn.active {
+    border-color: var(--accent);
+    background: rgba(240,165,0,0.08);
+    color: var(--navy);
+  }
+  .stats-period-btn:hover:not(.active) { border-color: var(--blue); color: var(--blue); }
+
+  #statsChartWrap {
+    background: white;
+    border-radius: var(--radius);
+    padding: 16px 12px 10px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border);
+    margin-bottom: 16px;
+    overflow: hidden;
+  }
+
+  .stats-history-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 10px;
+    padding: 0 2px;
+  }
+
+  .hist-item {
+    background: white;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    padding: 14px 16px;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 2px 8px rgba(13,27,42,0.06);
+  }
+  .hist-score-badge {
+    flex-shrink: 0;
+    width: 52px; height: 52px;
+    border-radius: 12px;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hist-score-badge .gpa { font-size: 18px; font-weight: 800; line-height: 1; }
+  .hist-score-badge .outof { font-size: 9px; font-weight: 600; opacity: 0.8; }
+  .badge-xuat-sac { background: rgba(29,184,124,0.15); color: var(--green); border: 1.5px solid rgba(29,184,124,0.3); }
+  .badge-gioi { background: rgba(29,184,124,0.1); color: #0e9e68; border: 1.5px solid rgba(29,184,124,0.2); }
+  .badge-kha { background: rgba(26,58,92,0.1); color: var(--blue); border: 1.5px solid rgba(26,58,92,0.2); }
+  .badge-tb { background: rgba(240,165,0,0.12); color: #c88000; border: 1.5px solid rgba(240,165,0,0.25); }
+  .badge-yeu { background: rgba(229,62,62,0.1); color: var(--red); border: 1.5px solid rgba(229,62,62,0.2); }
+
+  .hist-info { flex: 1; min-width: 0; }
+  .hist-datetime {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .hist-label {
+    font-size: 14px;
+    font-weight: 800;
+    color: var(--navy);
+    margin-bottom: 3px;
+  }
+  .hist-detail {
+    font-size: 11px;
+    color: var(--muted);
+    font-weight: 600;
+  }
+  .hist-trend {
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+
+  .stats-empty {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--muted);
+    font-size: 14px;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-badge">Ôn Luyện Chuyên Ngành</div>
+  <h1>Trắc Nghiệm Quy Chuẩn<br>Tiêu Chuẩn Xây Dựng</h1>
+  <p>Chỉ tiêu số liệu · QCVN 01:2021/BXD · TCVN các loại</p>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" id="tabQuiz" onclick="switchTab('quiz')">📝 Thi Trắc Nghiệm</button>
+  <button class="tab-btn" id="tabStudy" onclick="switchTab('study')">📖 Ôn Tập 300 Câu</button>
+  <button class="tab-btn" id="tabStats" onclick="switchTab('stats')">📊 Kết Quả</button>
+  <button class="tab-btn" id="tabBank" onclick="switchTab('bank')">📋 Ngân Hàng</button>
+</div>
+
+<div class="container">
+
+  <!-- START SCREEN -->
+  <div id="startScreen">
+    <div class="start-card">
+      <div class="start-icon">🏛️</div>
+      <h2>Kiểm Tra Kiến Thức Quy Chuẩn</h2>
+      <p>Mỗi lần thi bốc ngẫu nhiên <strong>20 câu</strong> từ ngân hàng <strong>200 câu hỏi</strong> về chỉ tiêu số liệu theo QCVN/TCVN xây dựng Việt Nam.</p>
+      <div class="info-grid">
+        <div class="info-item"><div class="val">200</div><div class="lbl">Câu hỏi</div></div>
+        <div class="info-item"><div class="val">20</div><div class="lbl">Câu mỗi đề</div></div>
+        <div class="info-item"><div class="val">4</div><div class="lbl">Đáp án/câu</div></div>
+        <div class="info-item"><div class="val">10đ</div><div class="lbl">Thang điểm</div></div>
+      </div>
+      <div class="topics">
+        <h3>📚 Chủ đề câu hỏi</h3>
+        <span class="topic-tag">Quy hoạch QCVN 01</span>
+        <span class="topic-tag">Cây xanh TCVN 9257</span>
+        <span class="topic-tag">Mật độ xây dựng</span>
+        <span class="topic-tag">Nhà ở riêng lẻ</span>
+        <span class="topic-tag">Chung cư</span>
+        <span class="topic-tag">Trường mầm non</span>
+        <span class="topic-tag">Trường học</span>
+        <span class="topic-tag">Giao thông</span>
+        <span class="topic-tag">Cấp thoát nước</span>
+        <span class="topic-tag">Kết cấu</span>
+        <span class="topic-tag">Khoảng lùi</span>
+        <span class="topic-tag">Hệ số sử dụng đất</span>
+      </div>
+      <button class="btn-start" onclick="startQuiz()">🚀 BẮT ĐẦU THI</button>
+    </div>
+  </div>
+
+  <!-- QUIZ SCREEN -->
+  <div id="quizScreen">
+    <div class="progress-bar-wrap">
+      <div class="progress-top">
+        <div class="q-counter">Câu <span id="qNum">1</span>/20</div>
+        <div class="score-live" id="scoreLive">✓ 0 đúng</div>
+      </div>
+      <div class="progress-track">
+        <div class="progress-fill" id="progressFill" style="width:5%"></div>
+      </div>
+    </div>
+
+    <div class="question-card" id="questionCard">
+      <div class="q-tag" id="qTag">Quy hoạch</div>
+      <div class="question-text" id="questionText"></div>
+    </div>
+
+    <ul class="options-list" id="optionsList"></ul>
+
+    <div class="explanation" id="explanationBox"></div>
+
+    <div class="nav-row">
+      <button class="btn-next" id="btnNext" onclick="nextQuestion()">Câu tiếp theo →</button>
+    </div>
+  </div>
+
+  <!-- STUDY SCREEN -->
+  <div id="studyScreen">
+    <div class="study-controls">
+      <input type="text" class="study-search" id="studySearch" placeholder="🔍 Tìm câu hỏi..." oninput="filterStudy()" />
+      <select class="study-filter" id="studyFilter" onchange="filterStudy()">
+        <option value="">Tất cả chủ đề</option>
+        <option value="Quy hoạch">Quy hoạch</option>
+        <option value="Mật độ XD">Mật độ XD</option>
+        <option value="Khoảng lùi">Khoảng lùi</option>
+        <option value="Cấp thoát nước">Cấp thoát nước</option>
+        <option value="Trường mầm non">Trường mầm non</option>
+        <option value="Cây xanh đô thị">Cây xanh đô thị</option>
+        <option value="Trường học">Trường học</option>
+        <option value="Giao thông">Giao thông</option>
+        <option value="PCCC">PCCC</option>
+        <option value="Nông thôn">Nông thôn</option>
+        <option value="Thoát nước">Thoát nước</option>
+        <option value="Kết cấu">Kết cấu</option>
+        <option value="Tiểu học">Tiểu học</option>
+        <option value="THCS">THCS</option>
+        <option value="Trụ sở">Trụ sở</option>
+        <option value="Chung cư">Chung cư</option>
+        <option value="Nhà ở riêng lẻ">Nhà ở riêng lẻ</option>
+      </select>
+      <div class="study-count">Hiển thị: <span id="studyCountNum">200</span> câu</div>
+    </div>
+    <div class="study-list" id="studyList"></div>
+    <div class="no-results" id="noResults" style="display:none">
+      <div class="icon">🔍</div>
+      <p>Không tìm thấy câu hỏi phù hợp</p>
+    </div>
+  </div>
+
+  <!-- STATS SCREEN -->
+  <div id="statsScreen" style="display:none;">
+    <div class="stats-header-card">
+      <div class="stats-title-row">
+        <div>
+          <div class="stats-title">📊 Thống Kê Kết Quả</div>
+          <div class="stats-subtitle">Theo dõi tiến trình học tập của bạn</div>
+        </div>
+        <button class="btn-clear-stats" onclick="clearStats()">🗑 Xóa</button>
+      </div>
+      <div class="stats-summary-grid" id="statsSummaryGrid"></div>
+    </div>
+
+    <div class="stats-filter-row">
+      <button class="stats-period-btn active" id="periodWeek" onclick="setPeriod('week')">Theo Tuần</button>
+      <button class="stats-period-btn" id="periodMonth" onclick="setPeriod('month')">Theo Tháng</button>
+      <button class="stats-period-btn" id="periodYear" onclick="setPeriod('year')">Theo Năm</button>
+    </div>
+
+    <div id="statsChartWrap">
+      <canvas id="statsChart" height="180"></canvas>
+    </div>
+
+    <div class="stats-history-title" id="statsHistoryTitle">Lịch sử chi tiết</div>
+    <div id="statsHistoryList"></div>
+    <div id="statsEmpty" style="display:none;" class="stats-empty">
+      <div style="font-size:48px;margin-bottom:12px;">📭</div>
+      <div>Chưa có lần thi nào được ghi lại.<br>Hãy hoàn thành bài thi đầu tiên!</div>
+    </div>
+  </div>
+
+  <!-- BANK SCREEN -->
+  <div id="bankScreen" style="display:none;">
+    <div class="stats-header-card">
+      <div class="stats-title-row">
+        <div>
+          <div class="stats-title">📋 Ngân Hàng Câu Hỏi</div>
+          <div class="stats-subtitle">Thống kê số câu hỏi theo từng chủ đề</div>
+        </div>
+      </div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;margin-top:10px;">
+        <div class="sum-box"><div class="sum-val accent" id="bankTotal">0</div><div class="sum-lbl">Tổng câu hỏi</div></div>
+        <div class="sum-box"><div class="sum-val green" id="bankTopics">0</div><div class="sum-lbl">Chủ đề</div></div>
+      </div>
+    </div>
+    <div id="bankTagList" style="display:flex;flex-direction:column;gap:10px;margin-top:16px;"></div>
+  </div>
+
+  <!-- RESULT SCREEN -->
+  <div id="resultScreen">
+    <div class="result-card">
+      <div class="result-emoji" id="resultEmoji"></div>
+      <div class="result-score-big" id="resultScore"></div>
+      <div class="result-label" id="resultLabel"></div>
+      <div class="result-sub" id="resultSub"></div>
+      <div class="result-stats">
+        <div class="stat-box"><div class="stat-val g" id="statCorrect">0</div><div class="stat-lbl">✓ Đúng</div></div>
+        <div class="stat-box"><div class="stat-val r" id="statWrong">0</div><div class="stat-lbl">✗ Sai</div></div>
+        <div class="stat-box"><div class="stat-val b" id="statPct">0%</div><div class="stat-lbl">Tỉ lệ</div></div>
+      </div>
+    </div>
+    <button class="btn-restart" onclick="startQuiz()">🔄 THI LẠI (Đề mới)</button>
+    <div class="review-section">
+      <h3>📋 Xem lại kết quả từng câu</h3>
+      <div id="reviewList"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===================== NGÂN HÀNG 200 CÂU HỎI =====================
+const allQuestions = [
+// ── I. QUY HOẠCH ──────────────────────────────────────────────
+{
+  tag:"Quy hoạch",
+  q:"Đất cây xanh sử dụng công cộng trong đơn vị ở tối thiểu là bao nhiêu?",
+  opts:["A. 1 m²/người","B. 2 m²/người","C. 3 m²/người","D. 4 m²/người"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.2, đất cây xanh SDCC trong đơn vị ở tối thiểu đạt 2 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Đất cây xanh sử dụng công cộng trong đô thị loại đặc biệt tối thiểu là bao nhiêu (không bao gồm trong đơn vị ở)?",
+  opts:["A. 4 m²/người","B. 5 m²/người","C. 6 m²/người","D. 7 m²/người"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.5, đô thị đặc biệt: tối thiểu 7 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Đất cây xanh sử dụng công cộng trong đô thị loại I và II tối thiểu là bao nhiêu?",
+  opts:["A. 4 m²/người","B. 5 m²/người","C. 6 m²/người","D. 7 m²/người"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.5, đô thị loại I và II: tối thiểu 6 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Đất cây xanh sử dụng công cộng trong đô thị loại III và IV tối thiểu là bao nhiêu?",
+  opts:["A. 4 m²/người","B. 5 m²/người","C. 6 m²/người","D. 7 m²/người"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.5, đô thị loại III và IV: tối thiểu 5 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Đất cây xanh sử dụng công cộng trong đô thị loại V tối thiểu là bao nhiêu?",
+  opts:["A. 3 m²/người","B. 4 m²/người","C. 5 m²/người","D. 6 m²/người"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.5, đô thị loại V: tối thiểu 4 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Quy mô dân số tối đa của một đơn vị ở là bao nhiêu người?",
+  opts:["A. 10.000 người","B. 15.000 người","C. 20.000 người","D. 25.000 người"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.2, quy mô dân số tối đa của một đơn vị ở là 20.000 người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Quy mô dân số tối thiểu của một đơn vị ở là bao nhiêu người?",
+  opts:["A. 2.000 người","B. 3.000 người","C. 4.000 người","D. 5.000 người"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.2, quy mô dân số tối thiểu của một đơn vị ở là 4.000 người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Mỗi đơn vị ở phải có tối thiểu một công viên/vườn hoa với quy mô tối thiểu là bao nhiêu m²?",
+  opts:["A. 2.000 m²","B. 3.000 m²","C. 4.000 m²","D. 5.000 m²"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.2, mỗi đơn vị ở phải có tối thiểu một công viên/vườn hoa quy mô tối thiểu 5.000 m²."
+},
+{
+  tag:"Quy hoạch",
+  q:"Sân chơi phục vụ nhóm nhà ở phải bố trí với bán kính phục vụ không quá bao nhiêu mét?",
+  opts:["A. 200 m","B. 300 m","C. 400 m","D. 500 m"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.2, sân chơi nhóm nhà ở bán kính phục vụ không > 300 m."
+},
+{
+  tag:"Quy hoạch",
+  q:"Dải cây xanh cách ly quanh khu công nghiệp tối thiểu rộng bao nhiêu mét?",
+  opts:["A. 5 m","B. 8 m","C. 10 m","D. 15 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.5.2, dải cây xanh cách ly quanh khu công nghiệp ≥ 10 m."
+},
+{
+  tag:"Quy hoạch",
+  q:"Tỷ lệ đất cây xanh tối thiểu trong khu công nghiệp, khu chế xuất là bao nhiêu %?",
+  opts:["A. 5%","B. 8%","C. 10%","D. 15%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.6, tỷ lệ đất cây xanh trong khu công nghiệp tối thiểu 10%."
+},
+{
+  tag:"Quy hoạch",
+  q:"Tỷ lệ đất giao thông tối thiểu trong khu công nghiệp, khu chế xuất là bao nhiêu %?",
+  opts:["A. 5%","B. 8%","C. 10%","D. 12%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.6, tỷ lệ đất giao thông trong khu công nghiệp tối thiểu 10%."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu đất trường mầm non tối thiểu là bao nhiêu m² cho 1 cháu?",
+  opts:["A. 8 m²/cháu","B. 10 m²/cháu","C. 12 m²/cháu","D. 15 m²/cháu"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, chỉ tiêu đất trường mầm non tối thiểu 12 m²/cháu."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu đất trường tiểu học tối thiểu là bao nhiêu m² cho 1 học sinh?",
+  opts:["A. 8 m²/HS","B. 10 m²/HS","C. 12 m²/HS","D. 15 m²/HS"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, chỉ tiêu đất trường tiểu học tối thiểu 10 m²/học sinh."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu đất trường THCS tối thiểu là bao nhiêu m² cho 1 học sinh?",
+  opts:["A. 8 m²/HS","B. 10 m²/HS","C. 12 m²/HS","D. 15 m²/HS"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, chỉ tiêu đất trường THCS tối thiểu 10 m²/học sinh."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu sử dụng công trình trường mầm non tối thiểu là bao nhiêu cháu/1.000 người?",
+  opts:["A. 30 cháu","B. 40 cháu","C. 50 cháu","D. 60 cháu"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, trường mầm non: 50 cháu/1.000 người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu đất sân chơi trong đơn vị ở tối thiểu là bao nhiêu m²/người?",
+  opts:["A. 0,3 m²/người","B. 0,5 m²/người","C. 0,7 m²/người","D. 1,0 m²/người"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, sân chơi tối thiểu 0,5 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu đất sân luyện tập trong đơn vị ở tối thiểu là bao nhiêu m²/người?",
+  opts:["A. 0,3 m²/người","B. 0,5 m²/người","C. 0,7 m²/người","D. 1,0 m²/người"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, sân luyện tập tối thiểu 0,5 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Diện tích tối thiểu của chợ cấp đơn vị ở là bao nhiêu m²?",
+  opts:["A. 1.000 m²","B. 1.500 m²","C. 2.000 m²","D. 3.000 m²"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, chợ cấp đơn vị ở tối thiểu 2.000 m²."
+},
+{
+  tag:"Quy hoạch",
+  q:"Diện tích tối thiểu của Trung tâm Văn hóa - Thể thao cấp đơn vị ở là bao nhiêu m²?",
+  opts:["A. 2.000 m²","B. 3.000 m²","C. 4.000 m²","D. 5.000 m²"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, Trung tâm VH-TT cấp đơn vị ở: 5.000 m²/công trình."
+},
+
+// ── II. MẬT ĐỘ XÂY DỰNG ──────────────────────────────────────
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà ở riêng lẻ có diện tích ≤ 90 m² là bao nhiêu %?",
+  opts:["A. 70%","B. 80%","C. 90%","D. 100%"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.8, lô đất ≤ 90 m²: mật độ XD tối đa 100%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà ở riêng lẻ có diện tích 200 m² là bao nhiêu %?",
+  opts:["A. 50%","B. 60%","C. 70%","D. 80%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.8, lô đất 200 m²: mật độ XD tối đa 70%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà ở riêng lẻ có diện tích 300 m² là bao nhiêu %?",
+  opts:["A. 50%","B. 60%","C. 70%","D. 80%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.8, lô đất 300 m²: mật độ XD tối đa 60%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà ở riêng lẻ có diện tích 500 m² là bao nhiêu %?",
+  opts:["A. 40%","B. 50%","C. 60%","D. 70%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.8, lô đất 500 m²: mật độ XD tối đa 50%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà ở riêng lẻ có diện tích ≥ 1.000 m² là bao nhiêu %?",
+  opts:["A. 30%","B. 40%","C. 50%","D. 60%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.8, lô đất ≥ 1.000 m²: mật độ XD tối đa 40%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà ở riêng lẻ có diện tích 100 m² là bao nhiêu %?",
+  opts:["A. 70%","B. 80%","C. 90%","D. 100%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.8, lô đất 100 m²: mật độ XD tối đa 90%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng gộp tối đa cho phép của đơn vị ở là bao nhiêu %?",
+  opts:["A. 40%","B. 50%","C. 60%","D. 70%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.4, mật độ XD gộp tối đa của đơn vị ở là 60%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng gộp tối đa của khu công viên là bao nhiêu %?",
+  opts:["A. 3%","B. 5%","C. 8%","D. 10%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.4, mật độ XD gộp tối đa khu công viên là 5%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng gộp tối đa của khu du lịch - nghỉ dưỡng (resort) là bao nhiêu %?",
+  opts:["A. 15%","B. 20%","C. 25%","D. 30%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.4, mật độ XD gộp tối đa resort là 25%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng gộp tối đa của khu công viên chuyên đề là bao nhiêu %?",
+  opts:["A. 15%","B. 20%","C. 25%","D. 30%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.4, mật độ XD gộp tối đa khu công viên chuyên đề là 25%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất công trình dịch vụ - công cộng (giáo dục, y tế...) xây dựng mới là bao nhiêu %?",
+  opts:["A. 30%","B. 40%","C. 50%","D. 60%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.3, mật độ XD thuần tối đa công trình dịch vụ-công cộng xây mới là 40%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Hệ số sử dụng đất tối đa của lô đất nhà ở riêng lẻ không được vượt quá bao nhiêu lần?",
+  opts:["A. 5 lần","B. 7 lần","C. 10 lần","D. 13 lần"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.8 chú thích, lô đất nhà ở riêng lẻ HSSDĐ không vượt 7 lần."
+},
+
+// ── III. KHOẢNG LÙI ──────────────────────────────────────────
+{
+  tag:"Khoảng lùi",
+  q:"Công trình có chiều cao ≥ 28 m tiếp giáp đường bề rộng < 19 m phải lùi tối thiểu bao nhiêu mét?",
+  opts:["A. 3 m","B. 4 m","C. 5 m","D. 6 m"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.7, bề rộng đường < 19m + chiều cao ≥ 28m: khoảng lùi 6 m."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Công trình có chiều cao 22-27 m tiếp giáp đường bề rộng < 19 m phải lùi tối thiểu bao nhiêu mét?",
+  opts:["A. 2 m","B. 3 m","C. 4 m","D. 6 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.7, đường < 19m + chiều cao 22÷<28m: khoảng lùi 4 m."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Công trình có chiều cao 19-21 m tiếp giáp đường bề rộng < 19 m phải lùi tối thiểu bao nhiêu mét?",
+  opts:["A. 0 m","B. 2 m","C. 3 m","D. 4 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.7, đường < 19m + chiều cao 19÷<22m: khoảng lùi 3 m."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Khoảng cách tối thiểu giữa cạnh dài hai công trình có chiều cao < 46 m là bao nhiêu mét?",
+  opts:["A. 1/3 chiều cao nhưng không < 4 m","B. 1/2 chiều cao nhưng không < 7 m","C. 1/2 chiều cao nhưng không < 5 m","D. 1/4 chiều cao nhưng không < 4 m"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.1.1, khoảng cách cạnh dài ≥ 1/2 chiều cao nhưng không < 7 m."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Khoảng cách tối thiểu giữa đầu hồi hai công trình có chiều cao < 46 m là bao nhiêu?",
+  opts:["A. ≥ 1/4 chiều cao nhưng không < 3 m","B. ≥ 1/3 chiều cao nhưng không < 4 m","C. ≥ 1/2 chiều cao nhưng không < 5 m","D. ≥ 1/4 chiều cao nhưng không < 4 m"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.1.1, khoảng cách đầu hồi ≥ 1/3 chiều cao nhưng không < 4 m."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Khoảng cách tối thiểu giữa cạnh dài hai công trình có chiều cao ≥ 46 m là bao nhiêu mét?",
+  opts:["A. 15 m","B. 20 m","C. 25 m","D. 30 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.1.2, khoảng cách cạnh dài công trình ≥ 46 m: phải ≥ 25 m."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Khoảng cách tối thiểu giữa đầu hồi hai công trình có chiều cao ≥ 46 m là bao nhiêu mét?",
+  opts:["A. 10 m","B. 12 m","C. 15 m","D. 20 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.6.1.2, khoảng cách đầu hồi công trình ≥ 46 m: phải ≥ 15 m."
+},
+
+// ── IV. CẤP NƯỚC ──────────────────────────────────────────────
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước sinh hoạt tối thiểu của khu vực nội thị đô thị là bao nhiêu?",
+  opts:["A. 60 lít/người/ngày đêm","B. 80 lít/người/ngày đêm","C. 100 lít/người/ngày đêm","D. 120 lít/người/ngày đêm"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, nội thị đô thị tối thiểu 80 lít/người/ngày đêm."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước cho trường học tối thiểu là bao nhiêu?",
+  opts:["A. 10 lít/học sinh/ngày đêm","B. 15 lít/học sinh/ngày đêm","C. 20 lít/học sinh/ngày đêm","D. 25 lít/học sinh/ngày đêm"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, trường học: 15 lít/học sinh/ngày đêm."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước cho trường mầm non tối thiểu là bao nhiêu?",
+  opts:["A. 50 lít/cháu/ngày đêm","B. 60 lít/cháu/ngày đêm","C. 75 lít/cháu/ngày đêm","D. 100 lít/cháu/ngày đêm"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, trường mầm non: 75 lít/cháu/ngày đêm."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước sinh hoạt nông thôn (cấp đến hộ gia đình) tối thiểu là bao nhiêu?",
+  opts:["A. 40 lít/người/ngày đêm","B. 50 lít/người/ngày đêm","C. 60 lít/người/ngày đêm","D. 80 lít/người/ngày đêm"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.16.13, cấp nước đến hộ gia đình nông thôn: tối thiểu 60 lít/người/ngày đêm."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước nông thôn (cấp đến vị trí lấy nước công cộng) tối thiểu là bao nhiêu?",
+  opts:["A. 30 lít/người/ngày đêm","B. 40 lít/người/ngày đêm","C. 50 lít/người/ngày đêm","D. 60 lít/người/ngày đêm"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.16.13, cấp đến điểm lấy nước công cộng nông thôn: tối thiểu 40 lít/người/ngày đêm."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Áp lực tự do tối thiểu trong mạng lưới cấp nước tại điểm lấy nước vào nhà (tính từ mặt đất) là bao nhiêu mét?",
+  opts:["A. 5 m","B. 8 m","C. 10 m","D. 12 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.4, áp lực tự do trong mạng lưới cấp nước không < 10 m."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Lưu lượng nước thải phát sinh tối thiểu phải đạt bao nhiêu % so với chỉ tiêu cấp nước?",
+  opts:["A. 60%","B. 70%","C. 80%","D. 90%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.11.1, lưu lượng nước thải phát sinh ≥ 80% chỉ tiêu cấp nước."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Khoảng cách tối đa giữa các họng cứu hỏa trên mạng ống cấp nước đô thị là bao nhiêu mét?",
+  opts:["A. 100 m","B. 120 m","C. 150 m","D. 200 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.5, khoảng cách tối đa giữa các họng cứu hỏa là 150 m."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Đường kính ống dẫn nước chữa cháy ngoài nhà tối thiểu phải là bao nhiêu mm?",
+  opts:["A. 75 mm","B. 100 mm","C. 125 mm","D. 150 mm"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.5, đường kính ống dẫn nước chữa cháy ngoài nhà ≥ 100 mm."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước tưới vườn hoa, công viên tối thiểu là bao nhiêu?",
+  opts:["A. 1 lít/m²/ngày đêm","B. 2 lít/m²/ngày đêm","C. 3 lít/m²/ngày đêm","D. 5 lít/m²/ngày đêm"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, tưới vườn hoa, công viên: 3 lít/m²/ngày đêm."
+},
+
+// ── V. TRƯỜNG MẦM NON ────────────────────────────────────────
+{
+  tag:"Trường mầm non",
+  q:"Diện tích sử dụng đất bình quân tối thiểu của trường mầm non khu vực thành phố/thị xã là bao nhiêu m²/trẻ?",
+  opts:["A. 6 m²/trẻ","B. 8 m²/trẻ","C. 10 m²/trẻ","D. 12 m²/trẻ"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 4.1.3, khu vực thành phố và thị xã: tối thiểu 8 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Diện tích sử dụng đất bình quân tối thiểu của trường mầm non khu vực nông thôn/miền núi là bao nhiêu m²/trẻ?",
+  opts:["A. 8 m²/trẻ","B. 10 m²/trẻ","C. 12 m²/trẻ","D. 15 m²/trẻ"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 4.1.3, khu vực nông thôn và miền núi: tối thiểu 12 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Bán kính phục vụ tối đa của trường mầm non tại khu vực thành phố, thị xã là bao nhiêu km?",
+  opts:["A. 0,5 km","B. 1,0 km","C. 1,5 km","D. 2,0 km"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 4.1.2, khu vực thành phố, thị xã: bán kính không > 1,0 km."
+},
+{
+  tag:"Trường mầm non",
+  q:"Bán kính phục vụ tối đa của trường mầm non tại miền núi, vùng sâu, vùng xa là bao nhiêu km?",
+  opts:["A. 1,0 km","B. 1,5 km","C. 2,0 km","D. 3,0 km"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 4.1.2, miền núi, vùng sâu, vùng xa: bán kính không > 2,0 km."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tỷ lệ diện tích xây dựng công trình trong trường mầm non tối đa là bao nhiêu %?",
+  opts:["A. 30%","B. 35%","C. 40%","D. 50%"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 4.2.3, diện tích XD công trình không lớn hơn 40%."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tỷ lệ diện tích sân vườn, cây xanh trong trường mầm non tối thiểu là bao nhiêu %?",
+  opts:["A. 30%","B. 35%","C. 40%","D. 50%"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 4.2.3, diện tích sân vườn, cây xanh không nhỏ hơn 40%."
+},
+{
+  tag:"Trường mầm non",
+  q:"Trường mầm non không nên thiết kế cao hơn bao nhiêu tầng?",
+  opts:["A. 2 tầng","B. 3 tầng","C. 4 tầng","D. 5 tầng"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 4.2.4, trường mầm non không nên thiết kế lớn hơn 3 tầng."
+},
+{
+  tag:"Trường mầm non",
+  q:"Chiều cao thông thuỷ tối thiểu của phòng sinh hoạt chung nhóm trẻ/lớp mẫu giáo là bao nhiêu?",
+  opts:["A. 2,70 m","B. 3,00 m","C. 3,30 m","D. 3,60 m"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 Bảng 1, phòng nhóm trẻ/lớp mẫu giáo: chiều cao thông thuỷ 3,30 m."
+},
+{
+  tag:"Trường mầm non",
+  q:"Chiều rộng thông thủy tối thiểu của hành lang trong trường mầm non là bao nhiêu mét?",
+  opts:["A. 1,50 m","B. 1,80 m","C. 2,10 m","D. 2,40 m"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.3, hành lang trường mầm non chiều rộng thông thuỷ ≥ 2,10 m."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích phòng sinh hoạt chung của nhóm trẻ (nhà trẻ) tối thiểu là bao nhiêu m²/trẻ?",
+  opts:["A. 1,0 m²/trẻ","B. 1,2 m²/trẻ","C. 1,5 m²/trẻ","D. 2,0 m²/trẻ"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.5, phòng SHC nhóm trẻ: từ 1,50 m²/trẻ đến 1,80 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Diện tích tối thiểu của phòng sinh hoạt chung của nhóm trẻ là bao nhiêu m²/phòng?",
+  opts:["A. 24 m²","B. 30 m²","C. 36 m²","D. 48 m²"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.5 chú thích, phòng SHC nhóm trẻ không nhỏ hơn 36 m²."
+},
+{
+  tag:"Trường mầm non",
+  q:"Diện tích tối thiểu của phòng sinh hoạt chung của lớp mẫu giáo là bao nhiêu m²/phòng?",
+  opts:["A. 36 m²","B. 48 m²","C. 54 m²","D. 60 m²"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.5 chú thích, phòng SHC lớp mẫu giáo không nhỏ hơn 54 m²."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích phòng ngủ của lớp mẫu giáo là bao nhiêu m²/trẻ?",
+  opts:["A. 0,8 m²/trẻ","B. 1,0 m²/trẻ","C. 1,2 m²/trẻ","D. 1,5 m²/trẻ"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.6, phòng ngủ: từ 1,20 m²/trẻ đến 1,50 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích phòng vệ sinh nhóm trẻ/lớp mẫu giáo tối thiểu là bao nhiêu m²/trẻ?",
+  opts:["A. 0,3 m²/trẻ","B. 0,4 m²/trẻ","C. 0,5 m²/trẻ","D. 0,6 m²/trẻ"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.7, phòng vệ sinh: từ 0,40 m²/trẻ đến 0,60 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích hiên chơi trong trường mầm non là bao nhiêu m²/trẻ?",
+  opts:["A. 0,30-0,50 m²/trẻ","B. 0,50-0,70 m²/trẻ","C. 0,70-1,00 m²/trẻ","D. 1,00-1,20 m²/trẻ"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.8, hiên chơi: từ 0,50 m²/trẻ đến 0,70 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Chiều rộng thông thủy tối thiểu của hiên chơi trong trường mầm non là bao nhiêu mét?",
+  opts:["A. 1,50 m","B. 1,80 m","C. 2,10 m","D. 2,40 m"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.8, chiều rộng thông thủy hiên chơi không nhỏ hơn 2,10 m."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn sân chơi chung ngoài trời trong trường mầm non tối thiểu là bao nhiêu m²/trẻ?",
+  opts:["A. 1,0 m²/trẻ","B. 2,0 m²/trẻ","C. 3,0 m²/trẻ","D. 4,0 m²/trẻ"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.6.3, sân chơi chung không nhỏ hơn 3,0 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích sân chơi riêng của lớp mẫu giáo là bao nhiêu m²/trẻ?",
+  opts:["A. 1,0-1,5 m²/trẻ","B. 1,5-2,0 m²/trẻ","C. 2,0-2,5 m²/trẻ","D. 2,5-3,0 m²/trẻ"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.6.4, sân chơi riêng lớp mẫu giáo: từ 2 m²/trẻ đến 2,5 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Độ sâu tối đa của bể vầy nước trong sân chơi trường mầm non là bao nhiêu mét?",
+  opts:["A. 0,2 m","B. 0,3 m","C. 0,4 m","D. 0,5 m"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.6.3 chú thích, bể vầy nước có độ sâu không quá 0,3 m."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích nhà bếp trong trường mầm non là bao nhiêu m²/trẻ?",
+  opts:["A. 0,20-0,25 m²/trẻ","B. 0,25-0,30 m²/trẻ","C. 0,30-0,35 m²/trẻ","D. 0,35-0,40 m²/trẻ"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.4.2, nhà bếp: từ 0,30 m²/trẻ đến 0,35 m²/trẻ."
+},
+
+// ── VI. CÂY XANH TCVN 9257 ───────────────────────────────────
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh sử dụng công cộng của đô thị đặc biệt theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 8-10 m²/người","B. 9-11 m²/người","C. 10-12 m²/người","D. 12-15 m²/người"],
+  ans:"D",
+  ex:"Theo TCVN 9257:2012 Bảng 1, đô thị đặc biệt: tiêu chuẩn cây xanh sử dụng CC là 12-15 m²/người."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh sử dụng công cộng của đô thị loại I và II theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 8-10 m²/người","B. 9-11 m²/người","C. 10-12 m²/người","D. 12-15 m²/người"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 Bảng 1, đô thị loại I và II: 10-12 m²/người."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh sử dụng công cộng của đô thị loại III và IV theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 7-9 m²/người","B. 8-10 m²/người","C. 9-11 m²/người","D. 10-12 m²/người"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 Bảng 1, đô thị loại III và IV: 9-11 m²/người."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh sử dụng công cộng của đô thị loại V theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 6-8 m²/người","B. 7-9 m²/người","C. 8-10 m²/người","D. 9-11 m²/người"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 Bảng 1, đô thị loại V: 8-10 m²/người."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh công viên của đô thị đặc biệt theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 5-7 m²/người","B. 6-7,5 m²/người","C. 7-9 m²/người","D. 9-11 m²/người"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 Bảng 2, đô thị đặc biệt: cây xanh công viên 7-9 m²/người."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh đường phố của đô thị đặc biệt theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 1,5-2,0 m²/người","B. 1,7-2,0 m²/người","C. 1,9-2,2 m²/người","D. 2,0-2,5 m²/người"],
+  ans:"B",
+  ex:"Theo TCVN 9257:2012 Bảng 4, đô thị đặc biệt: cây xanh đường phố 1,7-2,0 m²/người."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Chiều rộng tối thiểu dải cây xanh đường phố trồng một hàng là bao nhiêu mét?",
+  opts:["A. 1-2 m","B. 2-4 m","C. 4-6 m","D. 5-6 m"],
+  ans:"B",
+  ex:"Theo TCVN 9257:2012 Bảng D.1, dải cây trồng một hàng: chiều rộng tối thiểu 2-4 m."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Chiều rộng tối thiểu dải cây xanh đường phố trồng hai hàng là bao nhiêu mét?",
+  opts:["A. 3-4 m","B. 4-5 m","C. 5-6 m","D. 6-8 m"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 Bảng D.1, dải cây trồng hai hàng: chiều rộng tối thiểu 5-6 m."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Khoảng cách tối thiểu từ cây bụi, cây thân gỗ đến tường nhà và công trình là bao nhiêu mét?",
+  opts:["A. 1-2 m","B. 2-5 m","C. 3-5 m","D. 5-7 m"],
+  ans:"B",
+  ex:"Theo TCVN 9257:2012 điểm 5.10, cây bụi/thân gỗ cách tường nhà và công trình từ 2m đến 5m."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Khoảng cách tối thiểu từ cây trồng trên vỉa hè đến mạng điện là bao nhiêu mét?",
+  opts:["A. 2 m","B. 3 m","C. 4 m","D. 5 m"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 điểm 5.10, cây trồng cách giới hạn mạng điện 4 m."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Kích thước lỗ trống để trồng cây trên hè phố (hình vuông) tối thiểu là bao nhiêu?",
+  opts:["A. 0,8m x 0,8m","B. 1,0m x 1,0m","C. 1,2m x 1,2m","D. 1,5m x 1,5m"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 điểm D.2, lỗ trống trồng cây hình vuông tối thiểu 1,2 m x 1,2 m."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Diện tích mặt nước trong công viên/vườn hoa được quy đổi ra cây xanh tối đa là bao nhiêu %?",
+  opts:["A. 30%","B. 40%","C. 50%","D. 60%"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 và QCVN 01:2021, diện tích mặt nước quy đổi không chiếm quá 50% tổng chỉ tiêu cây xanh."
+},
+
+// ── VII. ĐƯỜNG GIAO THÔNG ────────────────────────────────────
+{
+  tag:"Giao thông",
+  q:"Đường nội bộ trong trạm cấp nước phải có chiều rộng tối thiểu bao nhiêu mét?",
+  opts:["A. 2,5 m","B. 3,0 m","C. 3,5 m","D. 4,0 m"],
+  ans:"C",
+  ex:"Theo Thông tư 15:2023/TT-BXD, đường nội bộ trạm cấp nước rộng tối thiểu 3,5 m."
+},
+{
+  tag:"Giao thông",
+  q:"Các tuyến đường phục vụ xe chữa cháy tiếp cận công trình phải có bề rộng tối thiểu là bao nhiêu mét?",
+  opts:["A. 3 m","B. 4 m","C. 5 m","D. 6 m"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.7.6, đường cho xe chữa cháy tiếp cận phải có bề rộng ≥ 4 m."
+},
+{
+  tag:"Giao thông",
+  q:"Tỷ lệ đường khu vực trung tâm xã nông thôn được chiếu sáng tối thiểu là bao nhiêu %?",
+  opts:["A. 30%","B. 40%","C. 50%","D. 60%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.16.14, chiếu sáng công cộng: tỷ lệ đường trung tâm xã chiếu sáng ≥ 50%."
+},
+
+// ── VIII. TRƯỜNG HỌC (Phổ thông) ────────────────────────────
+{
+  tag:"Trường học",
+  q:"Chiều cao thông thuỷ của phòng phục vụ học tập trong trường mầm non là bao nhiêu mét?",
+  opts:["A. 3,00-3,30 m","B. 3,30-3,60 m","C. 3,60-3,90 m","D. 3,90-4,20 m"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 Bảng 1, phòng phục vụ học tập: chiều cao thông thuỷ 3,60-3,90 m."
+},
+{
+  tag:"Trường học",
+  q:"Chiều rộng vế thang tối thiểu trong trường mầm non là bao nhiêu mét?",
+  opts:["A. 0,90 m","B. 1,00 m","C. 1,20 m","D. 1,50 m"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.4, chiều rộng vế thang trường mầm non không nhỏ hơn 1,20 m."
+},
+{
+  tag:"Trường học",
+  q:"Độ cao bậc thang tối đa trong trường mầm non là bao nhiêu mm?",
+  opts:["A. 100 mm","B. 120 mm","C. 150 mm","D. 160 mm"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.4, độ cao bậc thang trường mầm non không lớn hơn 120 mm."
+},
+{
+  tag:"Trường học",
+  q:"Tay vịn cho trẻ trong trường mầm non được bố trí cao bao nhiêu mét từ mặt bậc thang?",
+  opts:["A. 0,3-0,4 m","B. 0,4-0,5 m","C. 0,5-0,6 m","D. 0,6-0,7 m"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.4, tay vịn trẻ em cao từ 0,5 m đến 0,6 m tính từ mặt bậc thang."
+},
+{
+  tag:"Trường học",
+  q:"Lan can cầu thang trong trường mầm non không được thấp hơn bao nhiêu mm?",
+  opts:["A. 800 mm","B. 900 mm","C. 1.000 mm","D. 1.100 mm"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.4, lan can cầu thang không được thấp hơn 900 mm."
+},
+{
+  tag:"Trường học",
+  q:"Khoảng cách giữa hai thanh lan can trong trường mầm non không được lớn hơn bao nhiêu mét?",
+  opts:["A. 0,08 m","B. 0,10 m","C. 0,12 m","D. 0,15 m"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.4, khoảng cách giữa hai thanh lan can không lớn hơn 0,10 m."
+},
+{
+  tag:"Trường học",
+  q:"Tiêu chuẩn diện tích phòng giáo dục thể chất/nghệ thuật trong trường mầm non tối thiểu là bao nhiêu m²/trẻ?",
+  opts:["A. 1,5 m²/trẻ","B. 2,0 m²/trẻ","C. 2,5 m²/trẻ","D. 3,0 m²/trẻ"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.3.3, phòng GD thể chất/nghệ thuật: không nhỏ hơn 2,0 m²/trẻ."
+},
+{
+  tag:"Trường học",
+  q:"Diện tích tối thiểu phòng giáo dục thể chất/nghệ thuật trong trường mầm non là bao nhiêu m²/phòng?",
+  opts:["A. 40 m²","B. 50 m²","C. 60 m²","D. 72 m²"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.3.3, phòng GD thể chất/nghệ thuật không nhỏ hơn 60 m²/phòng."
+},
+{
+  tag:"Trường học",
+  q:"Chỉ tiêu học sinh tiểu học tối thiểu trong đơn vị ở là bao nhiêu học sinh/1.000 người?",
+  opts:["A. 50 HS","B. 55 HS","C. 60 HS","D. 65 HS"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, trường tiểu học: 65 học sinh/1.000 người."
+},
+{
+  tag:"Trường học",
+  q:"Chỉ tiêu học sinh THCS tối thiểu trong đơn vị ở là bao nhiêu học sinh/1.000 người?",
+  opts:["A. 45 HS","B. 50 HS","C. 55 HS","D. 60 HS"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, trường THCS: 55 học sinh/1.000 người."
+},
+
+// ── IX. PHÒNG CHÁY CHỮA CHÁY ────────────────────────────────
+{
+  tag:"PCCC",
+  q:"Thời gian tiếp xúc tối thiểu của hóa chất khử trùng với nước thải trong bể tiếp xúc là bao nhiêu phút?",
+  opts:["A. 15 phút","B. 20 phút","C. 25 phút","D. 30 phút"],
+  ans:"D",
+  ex:"Theo TCVN 7957:2023 điểm 11.2.4, thời gian tiếp xúc không nhỏ hơn 30 phút."
+},
+{
+  tag:"PCCC",
+  q:"Cường độ bức xạ UV tối thiểu để khử trùng nước thải là bao nhiêu mJ/cm²?",
+  opts:["A. 20 mJ/cm²","B. 25 mJ/cm²","C. 30 mJ/cm²","D. 40 mJ/cm²"],
+  ans:"C",
+  ex:"Theo TCVN 7957:2023 điểm 11.2.7, cường độ bức xạ UV không nhỏ hơn 30 mJ/cm²."
+},
+{
+  tag:"PCCC",
+  q:"Nồng độ clo dư sau khử trùng nước thải tối thiểu là bao nhiêu mg/l?",
+  opts:["A. 0,5 mg/l","B. 1,0 mg/l","C. 1,5 mg/l","D. 2,0 mg/l"],
+  ans:"C",
+  ex:"Theo TCVN 7957:2023 điểm 11.2.3, sau tiếp xúc nồng độ clo không nhỏ hơn 1,5 mg/l."
+},
+
+// ── X. QUY HOẠCH NÔNG THÔN ──────────────────────────────────
+{
+  tag:"Nông thôn",
+  q:"Chỉ tiêu đất đơn vị ở bình quân toàn đô thị loại I-II là bao nhiêu m²/người?",
+  opts:["A. 10-20 m²/người","B. 15-28 m²/người","C. 28-45 m²/người","D. 45-55 m²/người"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.2, đô thị loại I-II: đất đơn vị ở 15-28 m²/người."
+},
+{
+  tag:"Nông thôn",
+  q:"Chỉ tiêu đất đơn vị ở bình quân toàn đô thị loại III-IV là bao nhiêu m²/người?",
+  opts:["A. 15-28 m²/người","B. 20-35 m²/người","C. 28-45 m²/người","D. 45-55 m²/người"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.2, đô thị loại III-IV: đất đơn vị ở 28-45 m²/người."
+},
+{
+  tag:"Nông thôn",
+  q:"Chỉ tiêu đất đơn vị ở bình quân toàn đô thị loại V là bao nhiêu m²/người?",
+  opts:["A. 28-45 m²/người","B. 35-50 m²/người","C. 40-55 m²/người","D. 45-55 m²/người"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.2, đô thị loại V: đất đơn vị ở 45-55 m²/người."
+},
+{
+  tag:"Nông thôn",
+  q:"Diện tích đất trạm y tế cấp đơn vị ở tối thiểu là bao nhiêu m²/trạm?",
+  opts:["A. 300 m²","B. 400 m²","C. 500 m²","D. 600 m²"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.4, trạm y tế: tối thiểu 500 m²/trạm."
+},
+{
+  tag:"Nông thôn",
+  q:"Cao độ nền tối thiểu phải cao hơn mực nước ngập tính toán bao nhiêu mét đối với đất dân dụng?",
+  opts:["A. 0,2 m","B. 0,3 m","C. 0,5 m","D. 0,7 m"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.8.1, đất dân dụng: cao độ nền cao hơn mực nước ngập 0,3 m."
+},
+{
+  tag:"Nông thôn",
+  q:"Cao độ nền tối thiểu phải cao hơn mực nước ngập tính toán bao nhiêu mét đối với đất công nghiệp?",
+  opts:["A. 0,3 m","B. 0,4 m","C. 0,5 m","D. 0,7 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.8.1, đất công nghiệp: cao độ nền cao hơn mực nước ngập 0,5 m."
+},
+{
+  tag:"Nông thôn",
+  q:"Chỉ tiêu lượng chất thải rắn sinh hoạt phát sinh của đô thị loại đặc biệt và loại I là bao nhiêu kg/người/ngày?",
+  opts:["A. 0,8 kg/người/ngày","B. 0,9 kg/người/ngày","C. 1,0 kg/người/ngày","D. 1,3 kg/người/ngày"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.23, đô thị đặc biệt và loại I: CTR 1,3 kg/người/ngày."
+},
+{
+  tag:"Nông thôn",
+  q:"Chỉ tiêu lượng chất thải rắn sinh hoạt phát sinh của đô thị loại II là bao nhiêu kg/người/ngày?",
+  opts:["A. 0,8 kg/người/ngày","B. 0,9 kg/người/ngày","C. 1,0 kg/người/ngày","D. 1,3 kg/người/ngày"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.23, đô thị loại II: CTR 1,0 kg/người/ngày."
+},
+{
+  tag:"Nông thôn",
+  q:"Chỉ tiêu lượng chất thải rắn sinh hoạt phát sinh của đô thị loại V là bao nhiêu kg/người/ngày?",
+  opts:["A. 0,6 kg/người/ngày","B. 0,7 kg/người/ngày","C. 0,8 kg/người/ngày","D. 0,9 kg/người/ngày"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.23, đô thị loại V: CTR 0,8 kg/người/ngày."
+},
+
+// ── XI. XỬ LÝ NƯỚC THẢI ─────────────────────────────────────
+{
+  tag:"Thoát nước",
+  q:"Dung tích bể chứa nước sạch tối thiểu phải bằng bao nhiêu % công suất nhà máy?",
+  opts:["A. 10%","B. 15%","C. 20%","D. 25%"],
+  ans:"C",
+  ex:"Theo Thông tư 15:2023/TT-BXD điểm 2.5.9.1, dung tích bể chứa nhỏ nhất là 20% công suất nhà máy."
+},
+{
+  tag:"Thoát nước",
+  q:"Thời gian lưu nước trong bể chứa để đảm bảo khử trùng tối thiểu là bao nhiêu phút?",
+  opts:["A. 15 phút","B. 20 phút","C. 30 phút","D. 45 phút"],
+  ans:"C",
+  ex:"Theo Thông tư 15:2023/TT-BXD điểm 2.5.9.2, thời gian lưu nước trong bể chứa > 30 phút."
+},
+{
+  tag:"Thoát nước",
+  q:"Liều lượng clo hoạt tính sau xử lý sinh học/hóa lý để khử trùng nước thải là bao nhiêu mg/l?",
+  opts:["A. 1 mg/l","B. 2 mg/l","C. 3 mg/l","D. 5 mg/l"],
+  ans:"C",
+  ex:"Theo TCVN 7957:2023 điểm 11.2.3, sau xử lý sinh học/hóa lý: liều clo 3 mg/l."
+},
+{
+  tag:"Thoát nước",
+  q:"Liều lượng clo hoạt tính sau xử lý cơ học (để phòng ngừa sự cố) là bao nhiêu mg/l?",
+  opts:["A. 3 mg/l","B. 5 mg/l","C. 8 mg/l","D. 10 mg/l"],
+  ans:"D",
+  ex:"Theo TCVN 7957:2023 điểm 11.2.3, sau xử lý cơ học (phòng ngừa sự cố): liều clo 10 mg/l."
+},
+{
+  tag:"Thoát nước",
+  q:"Chiều rộng tối thiểu của dải cây xanh cách ly quanh nhà máy XLNT quy hoạch mới là bao nhiêu mét?",
+  opts:["A. 5 m","B. 8 m","C. 10 m","D. 15 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.11.2, dải cây xanh cách ly quanh nhà máy XLNT ≥ 10 m."
+},
+
+// ── XII. ĐẤT XÂY DỰNG - CÁC CHỈ TIÊU KHÁC ──────────────────
+{
+  tag:"Quy hoạch",
+  q:"Nhu cầu điện sinh hoạt tối thiểu của điểm dân cư nông thôn là bao nhiêu?",
+  opts:["A. 100 W/người","B. 120 W/người","C. 150 W/người","D. 200 W/người"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.16.14, nhu cầu điện sinh hoạt nông thôn tối thiểu 150 W/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Sản lượng nước có thể khai thác của nguồn nước phải gấp tối thiểu bao nhiêu lần nhu cầu sử dụng nước?",
+  opts:["A. 5 lần","B. 8 lần","C. 10 lần","D. 15 lần"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.3, sản lượng nguồn nước phải gấp tối thiểu 10 lần nhu cầu."
+},
+{
+  tag:"Quy hoạch",
+  q:"Nước thất thoát, rò rỉ trong mạng lưới cấp nước tối đa không được vượt quá bao nhiêu %?",
+  opts:["A. 10%","B. 12%","C. 15%","D. 20%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, nước thất thoát rò rỉ tối đa không vượt quá 15%."
+},
+{
+  tag:"Quy hoạch",
+  q:"Tỷ lệ dân số khu vực nội thị được cấp nước trong giai đoạn dài hạn phải đạt bao nhiêu %?",
+  opts:["A. 80%","B. 90%","C. 95%","D. 100%"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, tỷ lệ nội thị được cấp nước phải là 100% trong dài hạn."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu phát sinh CTR công nghiệp tối thiểu là bao nhiêu tấn/ha đất công nghiệp?",
+  opts:["A. 0,1 tấn/ha","B. 0,2 tấn/ha","C. 0,3 tấn/ha","D. 0,5 tấn/ha"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.12.1, CTR công nghiệp tối thiểu 0,3 tấn/ha đất khu công nghiệp."
+},
+{
+  tag:"Quy hoạch",
+  q:"Khối lượng phân bùn phát sinh tối thiểu là bao nhiêu m³/người/năm?",
+  opts:["A. 0,02 m³/người/năm","B. 0,03 m³/người/năm","C. 0,04 m³/người/năm","D. 0,05 m³/người/năm"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.11.1, khối lượng phân bùn tối thiểu ≥ 0,04 m³/người/năm."
+},
+{
+  tag:"Quy hoạch",
+  q:"Tỷ lệ diện tích đất giao thông trong khu vực đơn vị ở tối thiểu là bao nhiêu % (theo chỉ tiêu quy hoạch)?",
+  opts:["A. 10%","B. 15%","C. 18%","D. 20%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021 và thực tiễn quy hoạch đô thị Việt Nam, tỷ lệ đất giao thông trong đơn vị ở khoảng 15-25%."
+},
+{
+  tag:"Quy hoạch",
+  q:"Khoảng cách bảo vệ nguồn nước ngầm (bán kính tính từ giếng) là bao nhiêu mét?",
+  opts:["A. 10 m","B. 15 m","C. 20 m","D. 30 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.16.13, nguồn nước ngầm: khu vực bán kính 20 m không xây công trình làm nhiễm bẩn."
+},
+{
+  tag:"Quy hoạch",
+  q:"Khoảng cách bảo vệ nguồn nước mặt (về phía thượng lưu từ điểm lấy nước) là bao nhiêu mét?",
+  opts:["A. 100 m","B. 150 m","C. 200 m","D. 300 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.16.13, nguồn nước mặt: 200 m về phía thượng lưu không xây công trình gây ô nhiễm."
+},
+{
+  tag:"Quy hoạch",
+  q:"Khoảng cách bảo vệ nguồn nước mặt (về phía hạ lưu từ điểm lấy nước) là bao nhiêu mét?",
+  opts:["A. 50 m","B. 80 m","C. 100 m","D. 150 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.16.13, nguồn nước mặt: 100 m về phía hạ lưu không xây công trình gây ô nhiễm."
+},
+
+// ── XIII. THÊM CÂU VỀ MẦM NON / PCCC / KẾT CẤU ─────────────
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà máy/kho tàng trong khu công nghiệp là bao nhiêu %?",
+  opts:["A. 50%","B. 60%","C. 70%","D. 80%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.5.3, mật độ XD thuần của nhà máy, kho tàng tối đa 70%."
+},
+{
+  tag:"Mật độ XD",
+  q:"Mật độ xây dựng thuần tối đa của lô đất xây dựng nhà máy có trên 5 sàn dùng để sản xuất là bao nhiêu %?",
+  opts:["A. 50%","B. 60%","C. 70%","D. 80%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.5.3, nhà máy có >5 sàn SX: mật độ XD thuần tối đa 60%."
+},
+{
+  tag:"Kết cấu",
+  q:"Chiều dày lớp bê tông bảo vệ cốt thép chịu lực tối thiểu của sàn đặc có giới hạn chịu lửa REI 60 là bao nhiêu mm?",
+  opts:["A. 10 mm","B. 15 mm","C. 20 mm","D. 25 mm"],
+  ans:"B",
+  ex:"Theo QCVN 06:2022/BXD (PCCC) Bảng F.9, sàn đặc REI 60: chiều dày BT bảo vệ tối thiểu 15 mm."
+},
+{
+  tag:"Kết cấu",
+  q:"Chiều cao tổng thể tối thiểu của sàn đặc bê tông cốt thép có giới hạn chịu lửa REI 60 là bao nhiêu mm?",
+  opts:["A. 80 mm","B. 100 mm","C. 125 mm","D. 150 mm"],
+  ans:"B",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.9, sàn đặc REI 60: chiều cao tổng thể tối thiểu 100 mm."
+},
+{
+  tag:"Kết cấu",
+  q:"Chiều dày lớp bê tông bảo vệ cốt thép chịu lực tối thiểu của sàn đặc có giới hạn chịu lửa REI 120 là bao nhiêu mm?",
+  opts:["A. 15 mm","B. 18 mm","C. 20 mm","D. 25 mm"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.9, sàn đặc REI 120: chiều dày BT bảo vệ tối thiểu 20 mm."
+},
+{
+  tag:"Kết cấu",
+  q:"Chiều cao tổng thể tối thiểu của sàn đặc bê tông cốt thép có giới hạn chịu lửa REI 120 là bao nhiêu mm?",
+  opts:["A. 100 mm","B. 110 mm","C. 125 mm","D. 150 mm"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.9, sàn đặc REI 120: chiều cao tổng thể tối thiểu 125 mm."
+},
+{
+  tag:"Kết cấu",
+  q:"Chiều dày lớp bê tông bảo vệ cốt thép tối thiểu của sàn đặc có giới hạn chịu lửa REI 240 là bao nhiêu mm?",
+  opts:["A. 20 mm","B. 25 mm","C. 30 mm","D. 35 mm"],
+  ans:"B",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.9, sàn đặc REI 240: chiều dày BT bảo vệ tối thiểu 25 mm."
+},
+{
+  tag:"Kết cấu",
+  q:"Chiều cao tổng thể tối thiểu của sàn đặc bê tông cốt thép có giới hạn chịu lửa REI 240 là bao nhiêu mm?",
+  opts:["A. 125 mm","B. 140 mm","C. 150 mm","D. 175 mm"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.9, sàn đặc REI 240: chiều cao tổng thể tối thiểu 150 mm."
+},
+
+// ── XIV. TRẮC NGHIỆM TỔNG HỢP (Câu 151-200) ─────────────────
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu nước công trình công cộng, dịch vụ tối thiểu là bao nhiêu % lượng nước sinh hoạt?",
+  opts:["A. 5%","B. 8%","C. 10%","D. 15%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, nước công trình CC/dịch vụ tối thiểu bằng 10% lượng nước sinh hoạt."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu nước tưới cây, rửa đường tối thiểu là bao nhiêu % lượng nước sinh hoạt?",
+  opts:["A. 5%","B. 8%","C. 10%","D. 12%"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, nước tưới cây, rửa đường tối thiểu bằng 8% lượng nước sinh hoạt."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh công viên của đô thị loại V theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 3-5 m²/người","B. 4-6 m²/người","C. 5-7 m²/người","D. 6-7,5 m²/người"],
+  ans:"B",
+  ex:"Theo TCVN 9257:2012 Bảng 2, đô thị loại V: cây xanh công viên 4-6 m²/người."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh đường phố của đô thị loại V theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 1,5-2,0 m²/người","B. 1,7-2,0 m²/người","C. 1,9-2,2 m²/người","D. 2,0-2,5 m²/người"],
+  ans:"D",
+  ex:"Theo TCVN 9257:2012 Bảng 4, đô thị loại V: cây xanh đường phố 2,0-2,5 m²/người."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Công trình có chiều cao 22-27 m tiếp giáp đường bề rộng 19-21 m phải lùi tối thiểu bao nhiêu mét?",
+  opts:["A. 0 m","B. 2 m","C. 3 m","D. 4 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.7, đường 19÷<22m + chiều cao 22÷<28m: khoảng lùi 3 m."
+},
+{
+  tag:"Khoảng lùi",
+  q:"Công trình có chiều cao ≥ 28 m tiếp giáp đường bề rộng 19-21 m phải lùi tối thiểu bao nhiêu mét?",
+  opts:["A. 3 m","B. 4 m","C. 5 m","D. 6 m"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.7, đường 19÷<22m + chiều cao ≥ 28m: khoảng lùi 6 m."
+},
+{
+  tag:"Mật độ XD",
+  q:"Hệ số sử dụng đất tối đa của nhà chung cư có chiều cao >46 m trên lô đất ≤ 3.000 m² là bao nhiêu lần?",
+  opts:["A. 10,4 lần","B. 11,2 lần","C. 12,0 lần","D. 12,8 lần"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.12, lô ≤3.000m² + chiều cao >46m: HSSDĐ tối đa 12,8 lần."
+},
+{
+  tag:"Mật độ XD",
+  q:"Hệ số sử dụng đất tối đa của nhà chung cư chiều cao ≤ 16 m trên lô đất ≤ 3.000 m² là bao nhiêu lần?",
+  opts:["A. 3,0 lần","B. 3,5 lần","C. 4,0 lần","D. 4,8 lần"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.12, lô ≤3.000m² + chiều cao ≤16m: HSSDĐ tối đa 4,0 lần."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn đất khu trồng trọt cho trẻ trong sân vườn trường mầm non là bao nhiêu m²/trẻ?",
+  opts:["A. 0,1-0,2 m²/trẻ","B. 0,2-0,3 m²/trẻ","C. 0,3-0,5 m²/trẻ","D. 0,5-0,8 m²/trẻ"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.6.6, khu đất trồng trọt cho trẻ: từ 0,3 m²/trẻ đến 0,5 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn sân tập thể dục trong trường mầm non tối thiểu là bao nhiêu m²/trẻ?",
+  opts:["A. 0,3-0,5 m²/trẻ","B. 0,5-0,8 m²/trẻ","C. 0,8-1,0 m²/trẻ","D. 1,0-1,5 m²/trẻ"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.6.3 chú thích, sân tập thể dục: từ 0,5 m²/trẻ đến 0,8 m²/trẻ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Sân tập thể dục trong trường mầm non không được lớn hơn bao nhiêu m²?",
+  opts:["A. 80 m²","B. 100 m²","C. 120 m²","D. 150 m²"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.6.3 chú thích, sân tập thể dục không lớn hơn 120 m²."
+},
+{
+  tag:"Trường mầm non",
+  q:"Diện tích sân chơi riêng của nhóm nhà trẻ (nhà trẻ) là bao nhiêu m²/trẻ?",
+  opts:["A. 0,5-1,0 m²/trẻ","B. 1,0-1,5 m²/trẻ","C. 1,5-2,0 m²/trẻ","D. 2,0-2,5 m²/trẻ"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.6.4, sân chơi riêng nhóm nhà trẻ: từ 1,0 m²/trẻ đến 1,5 m²/trẻ."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước nhà/công trình công cộng, dịch vụ khác là bao nhiêu lít/m² sàn/ngày đêm?",
+  opts:["A. 1 lít/m²/ngày đêm","B. 2 lít/m²/ngày đêm","C. 3 lít/m²/ngày đêm","D. 5 lít/m²/ngày đêm"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, nhà/CT công cộng dịch vụ khác: 2 lít/m² sàn/ngày đêm."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước rửa đường tối thiểu là bao nhiêu lít/m²/ngày đêm?",
+  opts:["A. 0,2 lít/m²/ngày đêm","B. 0,4 lít/m²/ngày đêm","C. 0,6 lít/m²/ngày đêm","D. 1,0 lít/m²/ngày đêm"],
+  ans:"B",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, rửa đường: 0,4 lít/m²/ngày đêm."
+},
+{
+  tag:"Quy hoạch",
+  q:"Khoảng cách tối đa giữa họng cứu hỏa với mép đường (trên vỉa hè) là bao nhiêu mét?",
+  opts:["A. 1,5 m","B. 2,0 m","C. 2,5 m","D. 3,0 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.5, họng cứu hỏa trên vỉa hè: khoảng cách tối đa đến mép đường 2,5 m."
+},
+{
+  tag:"Quy hoạch",
+  q:"Khoảng cách tối thiểu giữa họng cứu hỏa với tường nhà là bao nhiêu mét?",
+  opts:["A. 3 m","B. 4 m","C. 5 m","D. 6 m"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.5, khoảng cách tối thiểu giữa họng và tường nhà là 5 m."
+},
+{
+  tag:"Nông thôn",
+  q:"Chỉ tiêu cấp nước khu công nghiệp tập trung (sản xuất ít nước thải) là bao nhiêu m³/ha/ngày?",
+  opts:["A. 10-20 m³/ha/ngày","B. 15-25 m³/ha/ngày","C. 25-45 m³/ha/ngày","D. Trên 45 m³/ha/ngày"],
+  ans:"B",
+  ex:"Theo TCVN 7957:2023 điểm 8.1.5, khu CN sản xuất ít nước thải: q lấy bằng 15-25 m³/ha.ngày."
+},
+{
+  tag:"Trường mầm non",
+  q:"Độ dốc đường cho trẻ khuyết tật dùng xe lăn tiếp cận trường mầm non là bao nhiêu?",
+  opts:["A. 1/15","B. 1/18","C. 1/20","D. 1/22"],
+  ans:"D",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.5 chú thích, độ dốc đường cho trẻ khuyết tật dùng xe lăn là 1/22."
+},
+{
+  tag:"Trường mầm non",
+  q:"Chiều dài đường dốc cho trẻ khuyết tật dùng xe lăn trong trường mầm non là bao nhiêu mét?",
+  opts:["A. 1-3 m","B. 3-5 m","C. 5-7 m","D. 7-10 m"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.1.5 chú thích, độ dài đường dốc cho xe lăn từ 3 m đến 5 m."
+},
+{
+  tag:"Trường mầm non",
+  q:"Khoảng cách giữa chiều cao bàn và mặt ghế ngồi trong phòng sinh hoạt chung trường mầm non không thấp hơn bao nhiêu mm?",
+  opts:["A. 180 mm","B. 200 mm","C. 220 mm","D. 250 mm"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.5, khoảng cách chiều cao bàn-mặt ghế không thấp hơn 220 mm."
+},
+{
+  tag:"Cây xanh đô thị",
+  q:"Tiêu chuẩn đất cây xanh đường phố của đô thị loại I và II theo TCVN 9257:2012 là bao nhiêu m²/người?",
+  opts:["A. 1,5-2,0 m²/người","B. 1,7-2,0 m²/người","C. 1,9-2,2 m²/người","D. 2,0-2,3 m²/người"],
+  ans:"C",
+  ex:"Theo TCVN 9257:2012 Bảng 4, đô thị loại I và II: cây xanh đường phố 1,9-2,2 m²/người."
+},
+{
+  tag:"Quy hoạch",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà chung cư có chiều cao ≤ 16 m, diện tích lô ≤ 3.000 m² là bao nhiêu %?",
+  opts:["A. 60%","B. 65%","C. 70%","D. 75%"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.9, chung cư ≤16m + lô ≤3.000m²: mật độ XD tối đa 75%."
+},
+{
+  tag:"Quy hoạch",
+  q:"Mật độ xây dựng thuần tối đa của lô đất nhà chung cư chiều cao ≤ 16 m, diện tích lô ≥ 35.000 m² là bao nhiêu %?",
+  opts:["A. 55%","B. 58%","C. 60%","D. 65%"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD Bảng 2.9, chung cư ≤16m + lô ≥35.000m²: mật độ XD tối đa 60%."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích phòng sinh hoạt chung của lớp mẫu giáo tối thiểu là bao nhiêu m²/trẻ?",
+  opts:["A. 1,2 m²/trẻ","B. 1,5 m²/trẻ","C. 1,8 m²/trẻ","D. 2,0 m²/trẻ"],
+  ans:"B",
+  ex:"Theo TCVN 3907:2011 điểm 5.2.5, phòng SHC lớp mẫu giáo: từ 1,50 m²/trẻ đến 1,80 m²/trẻ."
+},
+{
+  tag:"Cấp thoát nước",
+  q:"Chỉ tiêu cấp nước sản xuất nhỏ, tiểu thủ công nghiệp tối thiểu là bao nhiêu % lượng nước sinh hoạt?",
+  opts:["A. 5%","B. 6%","C. 7%","D. 8%"],
+  ans:"D",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, nước cho sản xuất nhỏ, tiểu thủ công nghiệp tối thiểu 8% lượng nước sinh hoạt."
+},
+{
+  tag:"Kết cấu",
+  q:"Cốt thép phải là sợi thép buộc có đường kính không nhỏ hơn bao nhiêu mm theo quy định lớp bê tông bảo vệ dầm thép?",
+  opts:["A. 1,5 mm","B. 2,0 mm","C. 2,3 mm","D. 3,0 mm"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.8 chú thích, cốt thép sợi thép buộc đường kính không nhỏ hơn 2,3 mm."
+},
+{
+  tag:"Kết cấu",
+  q:"Lưới thép bê tông bảo vệ dầm thép có khối lượng đơn vị tối thiểu là bao nhiêu kg/m²?",
+  opts:["A. 0,30 kg/m²","B. 0,36 kg/m²","C. 0,48 kg/m²","D. 0,60 kg/m²"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.8 chú thích, lưới thép khối lượng đơn vị không nhỏ hơn 0,48 kg/m²."
+},
+{
+  tag:"Kết cấu",
+  q:"Khoảng cách cốt thép trong lớp bê tông bảo vệ theo bất kỳ chiều nào không được lớn hơn bao nhiêu mm?",
+  opts:["A. 100 mm","B. 120 mm","C. 150 mm","D. 200 mm"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD Bảng F.8 chú thích, khoảng cách cốt thép trong BT bảo vệ không > 150 mm."
+},
+{
+  tag:"Quy hoạch",
+  q:"Chỉ tiêu cấp nước của khu công nghiệp tập trung tối thiểu là bao nhiêu m³/ha/ngày đêm cho tối thiểu 60% diện tích?",
+  opts:["A. 10 m³/ha/ngày","B. 15 m³/ha/ngày","C. 20 m³/ha/ngày","D. 25 m³/ha/ngày"],
+  ans:"C",
+  ex:"Theo QCVN 01:2021/BXD điểm 2.10.2, khu công nghiệp tập trung: tối thiểu 20 m³/ha/ngày đêm cho 60% diện tích."
+},
+{
+  tag:"Trường mầm non",
+  q:"Số chỗ để xe máy cho giáo viên/nhân viên trường mầm non tính đủ cho bao nhiêu % cán bộ?",
+  opts:["A. 70%","B. 80%","C. 90%","D. 100%"],
+  ans:"D",
+  ex:"Theo TCVN 3907:2011 điểm 5.5.9, chỗ để xe cho GV/CB phải tính đủ cho 100% cán bộ."
+},
+{
+  tag:"Trường mầm non",
+  q:"Số chỗ để xe cho khách và phụ huynh trường mầm non tính cho bao nhiêu % số học sinh?",
+  opts:["A. 50%","B. 60%","C. 70%","D. 80%"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.5.9, chỗ để xe cho khách và phụ huynh tính cho 70% số học sinh."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích 1 chỗ để xe máy trong trường mầm non là bao nhiêu m²/xe?",
+  opts:["A. 1,5 m²/xe","B. 2,0 m²/xe","C. 2,5 m²/xe","D. 3,0 m²/xe"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.5.9, tiêu chuẩn 1 chỗ để xe máy là 2,5 m²/xe."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích 1 chỗ để ô tô trong trường mầm non là bao nhiêu m²/xe?",
+  opts:["A. 15 m²/xe","B. 20 m²/xe","C. 25 m²/xe","D. 30 m²/xe"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.5.9, tiêu chuẩn 1 chỗ để ô tô là 25 m²/xe."
+},
+{
+  tag:"Trường mầm non",
+  q:"Tiêu chuẩn diện tích 1 chỗ để xe đạp trong trường mầm non là bao nhiêu m²/xe?",
+  opts:["A. 0,7 m²/xe","B. 0,8 m²/xe","C. 0,9 m²/xe","D. 1,0 m²/xe"],
+  ans:"C",
+  ex:"Theo TCVN 3907:2011 điểm 5.5.9, tiêu chuẩn 1 chỗ để xe đạp là 0,9 m²/xe."
+},
+
+// ── TRƯỜNG TIỂU HỌC (20 CÂU) ──────────────────────────────────
+{
+  tag:"Tiểu học",
+  q:"Theo TT 01/2021/TT-BXD, chỉ tiêu sử dụng công trình tối thiểu của trường tiểu học tại đơn vị ở là bao nhiêu học sinh/1 000 người?",
+  opts:["A. 50 học sinh/1 000 người","B. 65 học sinh/1 000 người","C. 70 học sinh/1 000 người","D. 80 học sinh/1 000 người"],
+  ans:"B",
+  ex:"Theo Bảng 2.4 TT 01/2021/TT-BXD, chỉ tiêu sử dụng công trình tối thiểu trường tiểu học cấp đơn vị ở là 65 học sinh/1 000 người."
+},
+{
+  tag:"Tiểu học",
+  q:"Chỉ tiêu sử dụng đất tối thiểu của trường tiểu học tại đơn vị ở là bao nhiêu m²/học sinh?",
+  opts:["A. 8 m²/học sinh","B. 10 m²/học sinh","C. 12 m²/học sinh","D. 15 m²/học sinh"],
+  ans:"B",
+  ex:"Theo Bảng 2.4 TT 01/2021/TT-BXD, chỉ tiêu sử dụng đất tối thiểu trường tiểu học cấp đơn vị ở là 10 m²/học sinh."
+},
+{
+  tag:"Tiểu học",
+  q:"Diện tích đất xây dựng tối thiểu cho trường tiểu học tại khu vực nông thôn, miền núi là bao nhiêu m²/học sinh?",
+  opts:["A. 6 m²/học sinh","B. 8 m²/học sinh","C. 10 m²/học sinh","D. 12 m²/học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.1.4, tiêu chuẩn diện tích tối thiểu khu vực nông thôn, miền núi là 10 m²/học sinh."
+},
+{
+  tag:"Tiểu học",
+  q:"Diện tích đất xây dựng tối thiểu của trường tiểu học tại khu vực thành phố, thị xã là bao nhiêu m²/học sinh?",
+  opts:["A. 4 m²/học sinh","B. 5 m²/học sinh","C. 6 m²/học sinh","D. 8 m²/học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.1.4, tiêu chuẩn diện tích tối thiểu khu vực thành phố, thị xã là 6 m²/học sinh."
+},
+{
+  tag:"Tiểu học",
+  q:"Tỷ lệ diện tích xây dựng công trình trong trường tiểu học không được vượt quá bao nhiêu %?",
+  opts:["A. 35%","B. 40%","C. 45%","D. 50%"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.2.3, diện tích xây dựng công trình không quá 45% tổng diện tích khu đất."
+},
+{
+  tag:"Tiểu học",
+  q:"Tỷ lệ diện tích sân cây xanh trong trường tiểu học không được nhỏ hơn bao nhiêu %?",
+  opts:["A. 20%","B. 25%","C. 30%","D. 35%"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.2.3, diện tích sân cây xanh không nhỏ hơn 30% tổng diện tích khu đất."
+},
+{
+  tag:"Tiểu học",
+  q:"Tỷ lệ diện tích sân chơi, bãi tập, giao thông nội bộ trong trường tiểu học không được nhỏ hơn bao nhiêu %?",
+  opts:["A. 20%","B. 25%","C. 30%","D. 35%"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011 điểm 4.2.3, diện tích sân chơi, bãi tập, giao thông nội bộ không nhỏ hơn 25%."
+},
+{
+  tag:"Tiểu học",
+  q:"Diện tích tối thiểu của phòng học lý thuyết thông thường trong trường tiểu học là bao nhiêu m²?",
+  opts:["A. 45 m²","B. 48 m²","C. 50 m²","D. 56 m²"],
+  ans:"D",
+  ex:"Theo TCVN 8794:2011 điểm 5.1.4, diện tích phòng học lý thuyết thông thường tối thiểu là 56 m² (cho 35 học sinh, 1,6 m²/học sinh)."
+},
+{
+  tag:"Tiểu học",
+  q:"Tiêu chuẩn diện tích tối thiểu trên một học sinh trong phòng học tiểu học là bao nhiêu m²?",
+  opts:["A. 1,2 m²/học sinh","B. 1,4 m²/học sinh","C. 1,5 m²/học sinh","D. 1,6 m²/học sinh"],
+  ans:"D",
+  ex:"Theo TCVN 8794:2011 điểm 5.1.4, tiêu chuẩn diện tích tối thiểu là 1,6 m²/học sinh."
+},
+{
+  tag:"Tiểu học",
+  q:"Số học sinh tối đa trong một lớp tiểu học là bao nhiêu?",
+  opts:["A. 30 học sinh","B. 35 học sinh","C. 40 học sinh","D. 45 học sinh"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011, trường tiểu học thiết kế với số học sinh tối đa mỗi lớp là 35 học sinh."
+},
+{
+  tag:"Tiểu học",
+  q:"Tiêu chuẩn diện tích phòng vệ sinh cho học sinh tiểu học tối thiểu là bao nhiêu m²/học sinh?",
+  opts:["A. 0,04 m²/học sinh","B. 0,05 m²/học sinh","C. 0,06 m²/học sinh","D. 0,08 m²/học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2, tiêu chuẩn diện tích tối thiểu khu vệ sinh là 0,06 m²/học sinh."
+},
+{
+  tag:"Tiểu học",
+  q:"Số lượng thiết bị vệ sinh cho học sinh nam tiểu học là bao nhiêu học sinh/chậu xí?",
+  opts:["A. 20 học sinh","B. 25 học sinh","C. 30 học sinh","D. 35 học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2, cần 01 xí và 01 chỗ rửa tay cho 30 học sinh (nam)."
+},
+{
+  tag:"Tiểu học",
+  q:"Số học sinh nữ tiểu học tối đa trên 1 chậu xí là bao nhiêu?",
+  opts:["A. 15 học sinh","B. 18 học sinh","C. 20 học sinh","D. 25 học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2, đối với học sinh nữ tối đa 20 học sinh/chậu xí."
+},
+{
+  tag:"Tiểu học",
+  q:"Tiêu chuẩn diện tích chỗ để xe đạp của học sinh tiểu học là bao nhiêu m²/xe?",
+  opts:["A. 0,7 m²/xe","B. 0,8 m²/xe","C. 0,9 m²/xe","D. 1,0 m²/xe"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.4, tiêu chuẩn diện tích 1 chỗ để xe đạp là 0,9 m²/xe."
+},
+{
+  tag:"Tiểu học",
+  q:"Tiêu chuẩn diện tích chỗ để xe máy của giáo viên trường tiểu học là bao nhiêu m²/xe?",
+  opts:["A. 2,0 m²/xe","B. 2,5 m²/xe","C. 3,0 m²/xe","D. 3,5 m²/xe"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.4, tiêu chuẩn diện tích 1 chỗ để xe máy là 2,5 m²/xe."
+},
+{
+  tag:"Tiểu học",
+  q:"Khoảng cách ly cây xanh tối thiểu khi trường tiểu học gần nguồn ồn hoặc chất thải độc hại là bao nhiêu m?",
+  opts:["A. 20 m","B. 25 m","C. 30 m","D. 50 m"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.1.2 CHÚ THÍCH, khoảng cách ly cây xanh không nhỏ hơn 30 m khi gần nguồn ồn hoặc chất thải độc hại."
+},
+{
+  tag:"Tiểu học",
+  q:"Tỷ lệ học sinh được tính để bố trí chỗ để xe cho học sinh tiểu học là bao nhiêu % tổng số học sinh?",
+  opts:["A. 30% đến 50%","B. 50% đến 70%","C. 60% đến 80%","D. 70% đến 90%"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.4 a), số lượng xe tính với tỷ lệ từ 50% đến 70% tổng số học sinh."
+},
+{
+  tag:"Tiểu học",
+  q:"Diện tích tối thiểu của phòng vệ sinh giáo viên trường tiểu học là bao nhiêu m²/phòng?",
+  opts:["A. 4 m²","B. 5 m²","C. 6 m²","D. 8 m²"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.3, diện tích phòng vệ sinh giáo viên không nhỏ hơn 6 m²/phòng."
+},
+{
+  tag:"Tiểu học",
+  q:"Số lượng chậu tiểu cho giáo viên nam trường tiểu học là bao nhiêu người/chậu?",
+  opts:["A. 10 người","B. 12 người","C. 15 người","D. 20 người"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.3, đối với nam: 01 chậu tiểu/15 người."
+},
+{
+  tag:"Tiểu học",
+  q:"Số lượng chậu xí cho giáo viên nữ trường tiểu học là bao nhiêu người/chậu?",
+  opts:["A. 10 người","B. 12 người","C. 15 người","D. 20 người"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.3, đối với nữ: 01 chậu xí/15 người."
+},
+
+// ── TRƯỜNG THCS (20 CÂU) ──────────────────────────────────────
+{
+  tag:"THCS",
+  q:"Theo TT 01/2021/TT-BXD, chỉ tiêu sử dụng công trình tối thiểu của trường THCS tại đơn vị ở là bao nhiêu học sinh/1 000 người?",
+  opts:["A. 40 học sinh/1 000 người","B. 50 học sinh/1 000 người","C. 55 học sinh/1 000 người","D. 60 học sinh/1 000 người"],
+  ans:"B",
+  ex:"Theo Bảng 2.4 TT 01/2021/TT-BXD, chỉ tiêu sử dụng công trình tối thiểu trường THCS cấp đơn vị ở là 50 học sinh/1 000 người."
+},
+{
+  tag:"THCS",
+  q:"Chỉ tiêu sử dụng đất tối thiểu của trường THCS tại đơn vị ở là bao nhiêu m²/học sinh?",
+  opts:["A. 8 m²/học sinh","B. 10 m²/học sinh","C. 12 m²/học sinh","D. 15 m²/học sinh"],
+  ans:"B",
+  ex:"Theo Bảng 2.4 TT 01/2021/TT-BXD, chỉ tiêu sử dụng đất tối thiểu trường THCS cấp đơn vị ở là 10 m²/học sinh."
+},
+{
+  tag:"THCS",
+  q:"Diện tích đất xây dựng tối thiểu cho trường THCS tại khu vực nông thôn, miền núi là bao nhiêu m²/học sinh?",
+  opts:["A. 6 m²/học sinh","B. 8 m²/học sinh","C. 10 m²/học sinh","D. 12 m²/học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.1.4, khu vực nông thôn, miền núi tiêu chuẩn diện tích tối thiểu là 10 m²/học sinh."
+},
+{
+  tag:"THCS",
+  q:"Diện tích đất xây dựng tối thiểu của trường THCS tại thành phố, thị xã là bao nhiêu m²/học sinh?",
+  opts:["A. 4 m²/học sinh","B. 5 m²/học sinh","C. 6 m²/học sinh","D. 8 m²/học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.1.4, khu vực thành phố, thị xã tiêu chuẩn diện tích tối thiểu là 6 m²/học sinh."
+},
+{
+  tag:"THCS",
+  q:"Trường THCS được bố trí ở cấp hành chính nào theo quy định?",
+  opts:["A. Cấp xã, phường","B. Cấp quận, huyện","C. Cấp tỉnh, thành phố","D. Cấp đơn vị ở"],
+  ans:"A",
+  ex:"Theo TCVN 8794:2011 điểm 4.1.1, trường THCS được bố trí trên địa bàn xã, phường."
+},
+{
+  tag:"THCS",
+  q:"Diện tích tối thiểu nội trú của trường THCS là bao nhiêu m²/học sinh?",
+  opts:["A. 6 m²/học sinh","B. 7 m²/học sinh","C. 8 m²/học sinh","D. 10 m²/học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.7.1, tiêu chuẩn diện tích đất xây dựng khu nội trú không nhỏ hơn 8 m²/học sinh."
+},
+{
+  tag:"THCS",
+  q:"Phòng ở học sinh nội trú THCS bố trí tối đa bao nhiêu học sinh mỗi phòng?",
+  opts:["A. 4 học sinh","B. 6 học sinh","C. 8 học sinh","D. 10 học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.7.2, mỗi phòng nội trú bố trí không quá 8 học sinh."
+},
+{
+  tag:"THCS",
+  q:"Số học sinh tối đa trong một lớp THCS là bao nhiêu?",
+  opts:["A. 35 học sinh","B. 40 học sinh","C. 45 học sinh","D. 50 học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011, số học sinh tối đa mỗi lớp THCS là 45 học sinh."
+},
+{
+  tag:"THCS",
+  q:"Chiều cao bệ xí tối thiểu trong khu vệ sinh học sinh THCS khuyết tật là bao nhiêu mm?",
+  opts:["A. 380 mm","B. 400 mm","C. 420 mm","D. 450 mm"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2 CHÚ THÍCH 4, chiều cao bệ xí THCS cho người khuyết tật: từ 420 mm đến 550 mm."
+},
+{
+  tag:"THCS",
+  q:"Chiều cao chậu rửa trong khu vệ sinh học sinh THCS khuyết tật là bao nhiêu mm?",
+  opts:["A. 700 mm","B. 750 mm","C. 800 mm","D. 850 mm"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2 CHÚ THÍCH 4, chiều cao chậu rửa THCS cho người khuyết tật là 750 mm."
+},
+{
+  tag:"THCS",
+  q:"Chiều cao tay vịn trong khu vệ sinh học sinh THCS khuyết tật là bao nhiêu mm?",
+  opts:["A. 800 mm đến 850 mm","B. 850 mm đến 900 mm","C. 900 mm đến 950 mm","D. 950 mm đến 1000 mm"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2 CHÚ THÍCH 4, chiều cao tay vịn THCS cho người khuyết tật: từ 850 mm đến 900 mm."
+},
+{
+  tag:"THCS",
+  q:"Tỷ lệ giáo viên, cán bộ nhân viên được tính để bố trí chỗ để xe tại trường THCS là bao nhiêu %?",
+  opts:["A. 50% đến 70%","B. 60% đến 80%","C. 60% đến 90%","D. 70% đến 100%"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.4 a), số lượng xe tính với tỷ lệ từ 60% đến 90% tổng số giáo viên, cán bộ nhân viên."
+},
+{
+  tag:"THCS",
+  q:"Tỷ lệ diện tích xây dựng công trình trong trường THCS không được vượt quá bao nhiêu %?",
+  opts:["A. 35%","B. 40%","C. 45%","D. 50%"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.2.3, diện tích xây dựng công trình không quá 45%."
+},
+{
+  tag:"THCS",
+  q:"Tỷ lệ diện tích sân cây xanh trong trường THCS không được nhỏ hơn bao nhiêu %?",
+  opts:["A. 20%","B. 25%","C. 30%","D. 35%"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.2.3, diện tích sân cây xanh không nhỏ hơn 30%."
+},
+{
+  tag:"THCS",
+  q:"Khi khu đất trường THCS tiếp giáp với công viên, vườn hoa, được phép giảm bao nhiêu % diện tích cây xanh trong trường?",
+  opts:["A. 5%","B. 8%","C. 10%","D. 15%"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 4.2.3 CHÚ THÍCH 1, trường hợp tiếp giáp công viên, vườn hoa thì cho phép giảm 10% diện tích cây xanh."
+},
+{
+  tag:"THCS",
+  q:"Số học sinh nữ THCS tối đa trên 1 chậu xí trong khu vệ sinh là bao nhiêu?",
+  opts:["A. 15 học sinh","B. 18 học sinh","C. 20 học sinh","D. 25 học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2, đối với học sinh nữ tối đa 20 học sinh/chậu xí."
+},
+{
+  tag:"THCS",
+  q:"Số học sinh nam THCS tối đa trên 1 chậu xí trong khu vệ sinh là bao nhiêu?",
+  opts:["A. 20 học sinh","B. 25 học sinh","C. 30 học sinh","D. 35 học sinh"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2, 01 tiểu nam, 01 xí và 01 chỗ rửa tay cho 30 học sinh nam."
+},
+{
+  tag:"THCS",
+  q:"Tiêu chuẩn diện tích tối thiểu trên một học sinh trong phòng học THCS là bao nhiêu m²?",
+  opts:["A. 1,2 m²/học sinh","B. 1,4 m²/học sinh","C. 1,5 m²/học sinh","D. 1,6 m²/học sinh"],
+  ans:"D",
+  ex:"Theo TCVN 8794:2011 điểm 5.1.4, tiêu chuẩn diện tích tối thiểu cho học sinh THCS là 1,6 m²/học sinh."
+},
+{
+  tag:"THCS",
+  q:"Chiều cao bệ xí trong khu vệ sinh học sinh THPT khuyết tật là bao nhiêu mm?",
+  opts:["A. 400 mm đến 500 mm","B. 420 mm đến 550 mm","C. 450 mm đến 600 mm","D. 500 mm đến 650 mm"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.2 CHÚ THÍCH 4, chiều cao bệ xí THPT: từ 450 mm đến 600 mm."
+},
+{
+  tag:"THCS",
+  q:"Tỷ lệ phụ huynh và khách tính để bố trí chỗ để xe tại trường THCS là bao nhiêu % tổng số học sinh?",
+  opts:["A. 30%","B. 40%","C. 50%","D. 60%"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.4 CHÚ THÍCH 1, chỗ để xe của khách và phụ huynh tính với tỷ lệ 50% tổng số học sinh."
+},
+
+// ── TRỤ SỞ (20 CÂU) ───────────────────────────────────────────
+{
+  tag:"Trụ sở",
+  q:"Theo TT 01/2021/TT-BXD, tổng diện tích đất trụ sở cơ quan xã tối thiểu là bao nhiêu m²?",
+  opts:["A. 500 m²","B. 800 m²","C. 1 000 m²","D. 1 500 m²"],
+  ans:"C",
+  ex:"Theo điểm 2.16.6.2 TT 01/2021/TT-BXD, tổng diện tích đất trụ sở cơ quan xã tối thiểu là 1 000 m²."
+},
+{
+  tag:"Trụ sở",
+  q:"Định mức diện tích đất sử dụng tối đa mỗi trụ sở xã tại khu vực đồng bằng, trung du là bao nhiêu m²?",
+  opts:["A. 300 m²","B. 400 m²","C. 500 m²","D. 600 m²"],
+  ans:"C",
+  ex:"Theo điểm 2.16.6.2 TT 01/2021/TT-BXD, khu vực đồng bằng, trung du không quá 500 m²/trụ sở."
+},
+{
+  tag:"Trụ sở",
+  q:"Định mức diện tích đất sử dụng tối đa mỗi trụ sở xã tại khu vực miền núi, hải đảo là bao nhiêu m²?",
+  opts:["A. 300 m²","B. 400 m²","C. 500 m²","D. 600 m²"],
+  ans:"B",
+  ex:"Theo điểm 2.16.6.2 TT 01/2021/TT-BXD, khu vực miền núi, hải đảo không quá 400 m²/trụ sở."
+},
+{
+  tag:"Trụ sở",
+  q:"Trụ sở cơ quan xã phải bố trí như thế nào theo quy định để tiết kiệm đất?",
+  opts:["A. Bố trí phân tán theo từng ngành","B. Bố trí tập trung","C. Bố trí dọc theo trục đường chính","D. Bố trí xen kẽ với khu dân cư"],
+  ans:"B",
+  ex:"Theo điểm 2.16.6.2 TT 01/2021/TT-BXD, trụ sở cơ quan xã phải bố trí tập trung để thuận lợi cho giao dịch và tiết kiệm đất."
+},
+{
+  tag:"Trụ sở",
+  q:"Theo QCVN 01:2021/BXD, chỉ tiêu sử dụng đất tối thiểu của trụ sở hành chính cấp đơn vị ở là bao nhiêu m²/người?",
+  opts:["A. 0,5 m²/người","B. 0,8 m²/người","C. 1,0 m²/người","D. 1,2 m²/người"],
+  ans:"C",
+  ex:"Theo Bảng 2.4 TT 01/2021/TT-BXD, chỉ tiêu sử dụng đất tối thiểu trụ sở hành chính cấp đơn vị ở là 1,0 m²/người."
+},
+{
+  tag:"Trụ sở",
+  q:"Trụ sở làm việc của HĐND, UBND xã phải bố trí tại khu vực nào trong xã?",
+  opts:["A. Trung tâm kinh tế","B. Khu trung tâm xã","C. Gần khu dân cư đông nhất","D. Gần đường giao thông chính"],
+  ans:"B",
+  ex:"Theo điểm 2.16.6.1 TT 01/2021/TT-BXD, trụ sở HĐND, UBND, Đảng ủy, công an, xã đội được bố trí tại khu trung tâm chính xã."
+},
+{
+  tag:"Trụ sở",
+  q:"Hệ số sử dụng đất tối đa cho lô đất trụ sở cơ quan nhà nước tại đô thị loại I, II, III là bao nhiêu?",
+  opts:["A. 3,0","B. 4,0","C. 5,0","D. 6,0"],
+  ans:"C",
+  ex:"Theo TT 01/2021/TT-BXD, hệ số sử dụng đất tối đa lô đất trụ sở cơ quan nhà nước được xác định theo quy hoạch được duyệt, thông thường không quá 5,0 tại đô thị loại I-III."
+},
+{
+  tag:"Trụ sở",
+  q:"Mật độ xây dựng tối đa cho lô đất trụ sở công sở tại đô thị là bao nhiêu %?",
+  opts:["A. 50%","B. 55%","C. 60%","D. 65%"],
+  ans:"A",
+  ex:"Theo TT 01/2021/TT-BXD, mật độ xây dựng tối đa lô đất trụ sở công sở không vượt quá 50% diện tích khu đất."
+},
+{
+  tag:"Trụ sở",
+  q:"Chiều cao tối thiểu của tầng 1 trong tòa nhà trụ sở làm việc là bao nhiêu m?",
+  opts:["A. 3,0 m","B. 3,3 m","C. 3,6 m","D. 4,0 m"],
+  ans:"C",
+  ex:"Theo tiêu chuẩn thiết kế nhà làm việc, chiều cao tầng 1 trụ sở hành chính tối thiểu là 3,6 m (thông thủy không nhỏ hơn 3,0 m)."
+},
+{
+  tag:"Trụ sở",
+  q:"Khu vệ sinh trong tòa nhà trụ sở hành chính cần bố trí cho bao nhiêu người/thiết bị theo tiêu chuẩn?",
+  opts:["A. 01 chậu xí/10 người nữ","B. 01 chậu xí/15 người nữ","C. 01 chậu xí/20 người nữ","D. 01 chậu xí/25 người nữ"],
+  ans:"C",
+  ex:"Theo TCVN 4601:1988 và các tiêu chuẩn nhà làm việc, tiêu chuẩn 01 chậu xí cho 20 người nữ trong công sở."
+},
+{
+  tag:"Trụ sở",
+  q:"Diện tích tối thiểu phòng làm việc cán bộ, công chức tại công sở là bao nhiêu m²/người?",
+  opts:["A. 3,0 m²/người","B. 3,5 m²/người","C. 4,0 m²/người","D. 5,0 m²/người"],
+  ans:"C",
+  ex:"Theo tiêu chuẩn thiết kế trụ sở cơ quan hành chính, diện tích làm việc tối thiểu là 4,0 m²/người (phòng chuyên viên)."
+},
+{
+  tag:"Trụ sở",
+  q:"Bán kính phục vụ tối đa của trụ sở hành chính cấp đơn vị ở theo quy định là bao nhiêu m?",
+  opts:["A. 300 m","B. 400 m","C. 500 m","D. 1 000 m"],
+  ans:"C",
+  ex:"Theo điểm 2.3.3 TT 01/2021/TT-BXD, bán kính phục vụ của các công trình dịch vụ - công cộng cấp đơn vị ở không quá 500 m."
+},
+{
+  tag:"Trụ sở",
+  q:"Trụ sở UBND xã bắt buộc phải có những công trình nào trong khu trung tâm xã?",
+  opts:["A. Chỉ UBND và Đảng ủy","B. HĐND, UBND, Đảng ủy, công an, xã đội và các đoàn thể","C. UBND, Đảng ủy và trạm y tế","D. HĐND và công an xã"],
+  ans:"B",
+  ex:"Theo điểm 2.16.6.1 TT 01/2021/TT-BXD, khu trung tâm chính xã bố trí: HĐND, UBND, Đảng ủy, công an, xã đội, các đoàn thể."
+},
+{
+  tag:"Trụ sở",
+  q:"Phòng họp trong trụ sở hành chính xã thường được thiết kế với diện tích tối thiểu bao nhiêu m²?",
+  opts:["A. 20 m²","B. 30 m²","C. 40 m²","D. 50 m²"],
+  ans:"C",
+  ex:"Theo tiêu chuẩn thiết kế trụ sở hành chính, phòng họp nhỏ tối thiểu 40 m² (phục vụ 20-30 người ngồi)."
+},
+{
+  tag:"Trụ sở",
+  q:"Diện tích tối thiểu phòng tiếp dân tại UBND xã là bao nhiêu m²?",
+  opts:["A. 12 m²","B. 15 m²","C. 18 m²","D. 20 m²"],
+  ans:"D",
+  ex:"Theo tiêu chuẩn thiết kế bộ phận một cửa UBND, phòng tiếp dân tối thiểu 20 m² đảm bảo đủ diện tích quầy giao dịch."
+},
+{
+  tag:"Trụ sở",
+  q:"Diện tích đỗ xe ô tô tối thiểu cho mỗi chỗ đỗ tại khuôn viên trụ sở hành chính là bao nhiêu m²?",
+  opts:["A. 20 m²","B. 25 m²","C. 30 m²","D. 35 m²"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.4, tiêu chuẩn diện tích 1 chỗ đỗ ô tô là 25 m²."
+},
+{
+  tag:"Trụ sở",
+  q:"Theo quy định, trụ sở công sở nhà nước phải đảm bảo khoảng lùi tối thiểu so với chỉ giới đường đỏ tại đô thị là bao nhiêu m?",
+  opts:["A. 3 m","B. 4 m","C. 5 m","D. 6 m"],
+  ans:"D",
+  ex:"Theo TT 01/2021/TT-BXD, khoảng lùi tối thiểu công trình công cộng (trong đó có công sở) so với chỉ giới đường đỏ thường là 6 m."
+},
+{
+  tag:"Trụ sở",
+  q:"Nhà vệ sinh nam trong công sở cần có 01 chậu tiểu cho bao nhiêu người?",
+  opts:["A. 10 người","B. 12 người","C. 15 người","D. 20 người"],
+  ans:"C",
+  ex:"Theo TCVN 8794:2011 điểm 5.6.3 và tiêu chuẩn thiết kế công sở, 01 chậu tiểu cho 15 nam."
+},
+{
+  tag:"Trụ sở",
+  q:"Chiều rộng hành lang trong tòa nhà trụ sở làm việc tối thiểu là bao nhiêu m?",
+  opts:["A. 1,2 m","B. 1,5 m","C. 1,8 m","D. 2,0 m"],
+  ans:"B",
+  ex:"Theo tiêu chuẩn thiết kế nhà làm việc, chiều rộng hành lang thoát hiểm trong tòa nhà công sở tối thiểu là 1,5 m."
+},
+{
+  tag:"Trụ sở",
+  q:"Công sở nhà nước khi xây dựng mới phải bố trí lối vào và không gian tiếp cận cho người khuyết tật theo nguyên tắc nào?",
+  opts:["A. Chỉ bố trí khi có yêu cầu","B. Bắt buộc theo tiêu chuẩn người khuyết tật tiếp cận","C. Chỉ áp dụng với công sở từ 5 tầng trở lên","D. Áp dụng theo từng dự án cụ thể"],
+  ans:"B",
+  ex:"Theo TCVN 8794:2011 điểm 3.8 và các quy định về người khuyết tật, công trình công cộng phải tuân theo tiêu chuẩn đảm bảo người khuyết tật tiếp cận sử dụng."
+},
+
+// ── CHUNG CƯ (20 CÂU) ─────────────────────────────────────────
+{
+  tag:"Chung cư",
+  q:"Theo định nghĩa trong TCVN 4451:2012, nhà chung cư là nhà ở có từ mấy tầng trở lên?",
+  opts:["A. Từ 2 tầng trở lên","B. Từ 3 tầng trở lên","C. Từ 4 tầng trở lên","D. Từ 5 tầng trở lên"],
+  ans:"A",
+  ex:"Theo TCVN 4451:2012 Phụ lục A điểm A.15 a), nhà chung cư là nhà ở có từ hai tầng trở lên, có lối đi, cầu thang và hệ thống HTKT sử dụng chung."
+},
+{
+  tag:"Chung cư",
+  q:"Phần sở hữu riêng trong nhà chung cư bao gồm những gì theo TCVN 4451:2012?",
+  opts:["A. Toàn bộ diện tích căn hộ bao gồm cả ban công, lôgia","B. Chỉ diện tích phòng ngủ","C. Cầu thang, hành lang, mái","D. Hệ thống cấp điện, nước chung"],
+  ans:"A",
+  ex:"Theo TCVN 4451:2012 Phụ lục A điểm A.15 b), phần sở hữu riêng bao gồm diện tích bên trong căn hộ, kể cả ban công, lôgia gắn liền với căn hộ."
+},
+{
+  tag:"Chung cư",
+  q:"Phần sở hữu chung trong nhà chung cư theo TCVN 4451:2012 bao gồm gì?",
+  opts:["A. Căn hộ của từng hộ gia đình","B. Ban công gắn liền với căn hộ","C. Khung, cột, tường chịu lực, thang máy, hành lang chung","D. Tủ điện riêng của từng căn hộ"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012 Phụ lục A điểm A.15 c), phần sở hữu chung gồm kết cấu chịu lực, tường bao, hành lang, cầu thang, thang máy, đường thoát hiểm, hệ thống kỹ thuật dùng chung..."
+},
+{
+  tag:"Chung cư",
+  q:"Theo QCVN 06:2022/BXD sửa đổi 2023, chung cư áp dụng quy chuẩn PCCC khi chiều cao PCCC tối đa là bao nhiêu m?",
+  opts:["A. 100 m","B. 120 m","C. 150 m","D. 200 m"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD điểm 1.1.2 (sửa đổi 2023), chung cư và nhà ở tập thể có chiều cao PCCC không quá 150 m thuộc phạm vi điều chỉnh."
+},
+{
+  tag:"Chung cư",
+  q:"Số tầng hầm tối đa trong chung cư theo QCVN 06:2022/BXD sửa đổi 2023 là bao nhiêu?",
+  opts:["A. 1 tầng hầm","B. 2 tầng hầm","C. 3 tầng hầm","D. 4 tầng hầm"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD điểm 1.1.2 (sửa đổi 2023), chung cư không quá 3 tầng hầm thuộc phạm vi áp dụng quy chuẩn PCCC."
+},
+{
+  tag:"Chung cư",
+  q:"Diện tích tối thiểu của một căn hộ chung cư loại 1 phòng ngủ theo tiêu chuẩn thiết kế nhà ở là bao nhiêu m²?",
+  opts:["A. 25 m²","B. 28 m²","C. 30 m²","D. 35 m²"],
+  ans:"C",
+  ex:"Theo tiêu chuẩn thiết kế nhà ở TCVN 4451:2012, căn hộ loại 1 phòng ngủ có diện tích sử dụng tối thiểu khoảng 30 m²."
+},
+{
+  tag:"Chung cư",
+  q:"Hệ số khối mặt bằng K trong TCVN 4451:2012 là gì?",
+  opts:["A. Tỉ số diện tích ở trên diện tích xây dựng","B. Tỉ số số tầng nhà trên chiều cao","C. Tỉ số diện tích phụ trên diện tích ở","D. Tỉ số diện tích hành lang trên tổng sàn"],
+  ans:"A",
+  ex:"Theo TCVN 4451:2012 Phụ lục B điểm B.2 a), hệ số mặt bằng K là tỉ số của diện tích ở trên diện tích xây dựng hoặc diện tích ở căn hộ trên diện tích sàn của căn hộ."
+},
+{
+  tag:"Chung cư",
+  q:"Theo TT 01/2021/TT-BXD, chỉ tiêu đất ở tối thiểu trong đơn vị ở của đô thị loại đặc biệt và loại I là bao nhiêu m²/người?",
+  opts:["A. 15 m²/người","B. 18 m²/người","C. 20 m²/người","D. 24 m²/người"],
+  ans:"C",
+  ex:"Theo Bảng 2.1 TT 01/2021/TT-BXD, chỉ tiêu đất ở tối thiểu đô thị loại đặc biệt và loại I là 20 m²/người."
+},
+{
+  tag:"Chung cư",
+  q:"Mật độ xây dựng thuần tối đa của lô đất chung cư tại đô thị loại I với chiều cao từ 9 đến 20 tầng là bao nhiêu %?",
+  opts:["A. 35%","B. 40%","C. 50%","D. 60%"],
+  ans:"C",
+  ex:"Theo Bảng 2.6 TT 01/2021/TT-BXD, mật độ xây dựng thuần tối đa lô đất nhà ở chung cư tại đô thị loại I (9-20 tầng) là 50%."
+},
+{
+  tag:"Chung cư",
+  q:"Chiều cao thông thủy tối thiểu của phòng ở trong căn hộ chung cư theo tiêu chuẩn là bao nhiêu m?",
+  opts:["A. 2,4 m","B. 2,5 m","C. 2,7 m","D. 3,0 m"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012 điểm 6.8, chiều cao thông thủy tối thiểu phòng ở trong căn hộ chung cư là 2,7 m."
+},
+{
+  tag:"Chung cư",
+  q:"Diện tích phòng ngủ tối thiểu trong căn hộ chung cư theo TCVN 4451:2012 là bao nhiêu m²?",
+  opts:["A. 6 m²","B. 8 m²","C. 9 m²","D. 10 m²"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012, diện tích tối thiểu của phòng ngủ trong căn hộ chung cư là 9 m²."
+},
+{
+  tag:"Chung cư",
+  q:"Diện tích bếp tối thiểu trong căn hộ chung cư theo tiêu chuẩn thiết kế là bao nhiêu m²?",
+  opts:["A. 3 m²","B. 4 m²","C. 5 m²","D. 6 m²"],
+  ans:"B",
+  ex:"Theo TCVN 4451:2012, diện tích tối thiểu khu bếp trong căn hộ chung cư là 4 m²."
+},
+{
+  tag:"Chung cư",
+  q:"Khu vệ sinh trong căn hộ chung cư cần có diện tích tối thiểu bao nhiêu m²?",
+  opts:["A. 2,0 m²","B. 2,5 m²","C. 3,0 m²","D. 3,5 m²"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012, diện tích khu vệ sinh tối thiểu trong căn hộ chung cư là 3,0 m²."
+},
+{
+  tag:"Chung cư",
+  q:"Diện tích khác trong nhà chung cư theo TCVN 4451:2012 Phụ lục A bao gồm những gì?",
+  opts:["A. Phòng ngủ, phòng khách","B. Hành lang, cầu thang chung","C. Diện tích ăn uống, giải khát, cắt tóc, chỗ để xe, phòng giặt công cộng","D. Ban công, lôgia"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012 Phụ lục A điểm A.10, diện tích khác là các phòng không dùng để ở: ăn uống, giải khát, cắt tóc, cửa hàng, chỗ để xe, phòng giặt công cộng..."
+},
+{
+  tag:"Chung cư",
+  q:"Diện tích xây dựng nhà chung cư theo TCVN 4451:2012 được tính theo cách nào?",
+  opts:["A. Tính theo tim tường","B. Tính theo kích thước phủ bì của tường ngoài, có mái che","C. Tính theo diện tích sàn hữu dụng","D. Tính theo diện tích căn hộ cộng lại"],
+  ans:"B",
+  ex:"Theo TCVN 4451:2012 Phụ lục A điểm A.11, diện tích xây dựng được tính theo kích thước phủ bì của tường ngoài, dãy cột có mái che."
+},
+{
+  tag:"Chung cư",
+  q:"Khối tích xây dựng nhà chung cư theo TCVN 4451:2012 được tính bao gồm phần nào?",
+  opts:["A. Chỉ phần trên mặt đất","B. Chỉ phần dưới mặt đất (tầng hầm)","C. Cả phần trên và phần dưới mặt đất","D. Chỉ tính từ tầng 2 trở lên"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012 Phụ lục A điểm A.12, khối tích xây dựng nhà ở được tính bằng tổng khối tích tại cao độ ±0.000 (phần trên mặt đất) và dưới cao độ đó (phần dưới mặt đất)."
+},
+{
+  tag:"Chung cư",
+  q:"Khu bếp và khu vệ sinh bố trí ngoài ngôi nhà ở thì xử lý diện tích như thế nào theo TCVN 4451:2012?",
+  opts:["A. Tính vào diện tích nhà ở","B. Không tính vào diện tích nhà ở, tính riêng","C. Tính vào diện tích phụ của nhà","D. Tính 50% vào diện tích nhà ở"],
+  ans:"B",
+  ex:"Theo TCVN 4451:2012 Phụ lục A điểm A.14, khu bếp và khu vệ sinh bố trí ngoài nhà không tính vào diện tích của nhà ở, được tính riêng."
+},
+{
+  tag:"Chung cư",
+  q:"Chỉ tiêu đất ở tối thiểu tại đô thị loại II và loại III theo TT 01/2021/TT-BXD là bao nhiêu m²/người?",
+  opts:["A. 20 m²/người","B. 22 m²/người","C. 24 m²/người","D. 28 m²/người"],
+  ans:"C",
+  ex:"Theo Bảng 2.1 TT 01/2021/TT-BXD, chỉ tiêu đất ở tối thiểu đô thị loại II và loại III là 24 m²/người."
+},
+{
+  tag:"Chung cư",
+  q:"Hệ số sử dụng đất tối đa (FAR) của lô đất chung cư tại đô thị loại I, nhà từ 21 tầng trở lên là bao nhiêu?",
+  opts:["A. 5,0","B. 6,0","C. 7,0","D. 8,0"],
+  ans:"C",
+  ex:"Theo Bảng 2.6 TT 01/2021/TT-BXD, hệ số sử dụng đất tối đa lô đất nhà ở chung cư loại đặc biệt, loại I từ 21 tầng trở lên là 7,0."
+},
+{
+  tag:"Chung cư",
+  q:"Khoảng lùi tối thiểu của nhà chung cư từ 9 đến 20 tầng tại đô thị so với chỉ giới đường đỏ đường phố chính là bao nhiêu m?",
+  opts:["A. 4 m","B. 5 m","C. 6 m","D. 8 m"],
+  ans:"C",
+  ex:"Theo TT 01/2021/TT-BXD, khoảng lùi tối thiểu công trình nhà ở cao tầng (9-20 tầng) so với chỉ giới đường đỏ đường phố chính là 6 m."
+},
+
+// ── NHÀ Ở RIÊNG LẺ (20 CÂU) ──────────────────────────────────
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Theo QCVN 06:2022/BXD sửa đổi 2023, nhà ở riêng lẻ bao nhiêu tầng trở lên phải áp dụng quy chuẩn PCCC?",
+  opts:["A. Từ 5 tầng trở lên","B. Từ 6 tầng trở lên","C. Từ 7 tầng trở lên","D. Từ 8 tầng trở lên"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD điểm 1.1.2 (sửa đổi 2023), nhà ở riêng lẻ từ 7 tầng trở lên (hoặc chiều cao PCCC từ 25 m trở lên) thuộc phạm vi áp dụng."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Chiều cao PCCC tối thiểu để nhà ở riêng lẻ phải áp dụng QCVN 06:2022/BXD là bao nhiêu m?",
+  opts:["A. 15 m","B. 20 m","C. 25 m","D. 30 m"],
+  ans:"C",
+  ex:"Theo QCVN 06:2022/BXD điểm 1.1.2 (sửa đổi 2023), nhà ở riêng lẻ có chiều cao PCCC từ 25 m trở lên phải áp dụng quy chuẩn."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Khối tích tối thiểu để nhà ở riêng lẻ phải áp dụng QCVN 06:2022/BXD là bao nhiêu m³?",
+  opts:["A. 2 000 m³","B. 3 000 m³","C. 4 000 m³","D. 5 000 m³"],
+  ans:"D",
+  ex:"Theo QCVN 06:2022/BXD điểm 1.1.2 (sửa đổi 2023), nhà ở riêng lẻ có khối tích từ 5 000 m³ trở lên phải áp dụng quy chuẩn PCCC."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Số tầng hầm tối thiểu của nhà ở riêng lẻ để phải áp dụng QCVN 06:2022/BXD là bao nhiêu?",
+  opts:["A. Nhiều hơn 1 tầng hầm","B. Từ 2 tầng hầm","C. Từ 3 tầng hầm","D. Từ 4 tầng hầm"],
+  ans:"A",
+  ex:"Theo QCVN 06:2022/BXD điểm 1.1.2 (sửa đổi 2023), nhà ở riêng lẻ có nhiều hơn 1 tầng hầm đến 3 tầng hầm phải áp dụng."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Mật độ xây dựng tối đa của lô đất nhà ở riêng lẻ tại đô thị có diện tích từ 90 m² đến dưới 200 m² là bao nhiêu %?",
+  opts:["A. 60%","B. 70%","C. 80%","D. 90%"],
+  ans:"C",
+  ex:"Theo TT 01/2021/TT-BXD Bảng 2.5, lô đất nhà ở riêng lẻ diện tích 90 m² đến dưới 200 m² mật độ xây dựng tối đa là 80%."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Mật độ xây dựng tối đa của lô đất nhà ở riêng lẻ tại đô thị có diện tích từ 200 m² đến dưới 500 m² là bao nhiêu %?",
+  opts:["A. 60%","B. 70%","C. 75%","D. 80%"],
+  ans:"B",
+  ex:"Theo TT 01/2021/TT-BXD Bảng 2.5, lô đất nhà ở riêng lẻ diện tích 200 m² đến dưới 500 m² mật độ xây dựng tối đa là 70%."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Mật độ xây dựng tối đa của lô đất nhà ở riêng lẻ tại đô thị có diện tích từ 500 m² trở lên là bao nhiêu %?",
+  opts:["A. 40%","B. 50%","C. 60%","D. 70%"],
+  ans:"C",
+  ex:"Theo TT 01/2021/TT-BXD Bảng 2.5, lô đất nhà ở riêng lẻ diện tích từ 500 m² trở lên mật độ xây dựng tối đa là 60%."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Khoảng lùi tối thiểu của nhà ở riêng lẻ từ 1 đến 3 tầng so với chỉ giới đường đỏ tại đô thị là bao nhiêu m?",
+  opts:["A. 2 m","B. 3 m","C. 4 m","D. 5 m"],
+  ans:"B",
+  ex:"Theo TT 01/2021/TT-BXD, khoảng lùi tối thiểu nhà ở riêng lẻ thấp tầng (1-3 tầng) so với chỉ giới đường đỏ là 3 m."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Khoảng lùi tối thiểu của nhà ở riêng lẻ từ 4 đến 6 tầng so với chỉ giới đường đỏ tại đô thị là bao nhiêu m?",
+  opts:["A. 3 m","B. 4 m","C. 5 m","D. 6 m"],
+  ans:"C",
+  ex:"Theo TT 01/2021/TT-BXD, khoảng lùi tối thiểu nhà ở riêng lẻ trung tầng (4-6 tầng) so với chỉ giới đường đỏ là 5 m."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Diện tích tối thiểu phòng ở của nhà ở riêng lẻ theo tiêu chuẩn thiết kế nhà ở là bao nhiêu m²?",
+  opts:["A. 6 m²","B. 7 m²","C. 8 m²","D. 9 m²"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012, diện tích tối thiểu của phòng ở (phòng ngủ) trong nhà ở riêng lẻ là 8 m²."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Chiều cao thông thủy tối thiểu của phòng ở trong nhà ở riêng lẻ theo tiêu chuẩn là bao nhiêu m?",
+  opts:["A. 2,4 m","B. 2,5 m","C. 2,7 m","D. 3,0 m"],
+  ans:"C",
+  ex:"Theo TCVN 4451:2012, chiều cao thông thủy tối thiểu phòng ở trong nhà ở là 2,7 m (đối với phòng không có điều hòa)."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Hệ số sử dụng đất tối đa (FAR) của lô đất nhà ở riêng lẻ 4-6 tầng tại đô thị loại I là bao nhiêu?",
+  opts:["A. 2,0","B. 2,5","C. 3,0","D. 4,0"],
+  ans:"C",
+  ex:"Theo TT 01/2021/TT-BXD Bảng 2.5, hệ số sử dụng đất tối đa lô đất nhà ở riêng lẻ 4-6 tầng tại đô thị loại I là 3,0."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Mật độ xây dựng tối đa của lô đất nhà ở riêng lẻ tại đô thị có diện tích dưới 90 m² là bao nhiêu %?",
+  opts:["A. 80%","B. 90%","C. 100%","D. 95%"],
+  ans:"C",
+  ex:"Theo TT 01/2021/TT-BXD Bảng 2.5, lô đất nhà ở riêng lẻ diện tích dưới 90 m² mật độ xây dựng tối đa là 100%."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Chiều rộng tối thiểu của lô đất nhà ở riêng lẻ xây dựng biệt thự theo quy định chung là bao nhiêu m?",
+  opts:["A. 8 m","B. 10 m","C. 12 m","D. 15 m"],
+  ans:"C",
+  ex:"Theo tiêu chuẩn thiết kế nhà ở và quy định phổ biến tại nhiều địa phương, chiều rộng tối thiểu lô đất biệt thự thường là 12 m."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Chiều cao thông thủy tối thiểu của tầng trệt trong nhà ở riêng lẻ theo tiêu chuẩn thiết kế là bao nhiêu m?",
+  opts:["A. 2,7 m","B. 3,0 m","C. 3,3 m","D. 3,6 m"],
+  ans:"B",
+  ex:"Theo TCVN 4451:2012 và tiêu chuẩn thiết kế nhà ở, chiều cao thông thủy tầng trệt tối thiểu là 3,0 m để đảm bảo thông thoáng."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Diện tích khu bếp tối thiểu trong nhà ở riêng lẻ theo tiêu chuẩn thiết kế là bao nhiêu m²?",
+  opts:["A. 3 m²","B. 4 m²","C. 5 m²","D. 6 m²"],
+  ans:"B",
+  ex:"Theo TCVN 4451:2012, diện tích tối thiểu khu bếp trong nhà ở là 4 m²."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Nhà ở riêng lẻ khi cải tạo nâng cấp không thay đổi kết cấu chịu lực thì cần loại giấy phép gì?",
+  opts:["A. Không cần giấy phép","B. Giấy phép xây dựng bình thường","C. Giấy phép xây dựng sửa chữa, cải tạo","D. Chỉ cần thông báo UBND xã"],
+  ans:"C",
+  ex:"Theo Luật Xây dựng, nhà ở riêng lẻ sửa chữa, cải tạo có ảnh hưởng đến kết cấu chịu lực phải xin giấy phép xây dựng sửa chữa, cải tạo."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Nhà ở riêng lẻ tại nông thôn có số tầng tối đa bao nhiêu tầng mà không cần giấy phép xây dựng (theo Luật Xây dựng 2020)?",
+  opts:["A. 1 tầng","B. 2 tầng","C. 3 tầng","D. Không có quy định miễn giấy phép theo số tầng"],
+  ans:"D",
+  ex:"Theo Luật Xây dựng 2020, việc miễn giấy phép xây dựng nhà ở nông thôn không dựa đơn thuần vào số tầng mà còn phụ thuộc vào quy hoạch và điều kiện cụ thể của địa phương."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Diện tích phòng tắm tối thiểu trong nhà ở riêng lẻ theo tiêu chuẩn thiết kế là bao nhiêu m²?",
+  opts:["A. 1,5 m²","B. 2,0 m²","C. 2,5 m²","D. 3,0 m²"],
+  ans:"B",
+  ex:"Theo TCVN 4451:2012, diện tích tối thiểu phòng tắm/vệ sinh trong nhà ở là 2,0 m²."
+},
+{
+  tag:"Nhà ở riêng lẻ",
+  q:"Số lần sử dụng hệ số sử dụng đất (FAR) trong tính toán quy hoạch nhà ở riêng lẻ tại đô thị nhằm mục đích gì?",
+  opts:["A. Xác định số tầng tối đa","B. Kiểm soát tổng diện tích sàn xây dựng trên lô đất","C. Quy định chiều cao công trình","D. Giới hạn mật độ cây xanh"],
+  ans:"B",
+  ex:"Hệ số sử dụng đất (FAR) = Tổng diện tích sàn / Diện tích lô đất, dùng để kiểm soát tổng khối lượng xây dựng (diện tích sàn) trên một lô đất."
+}
+];
+
+// ===================== TAB LOGIC =====================
+function switchTab(tab) {
+  document.getElementById('tabQuiz').classList.toggle('active', tab === 'quiz');
+  document.getElementById('tabStudy').classList.toggle('active', tab === 'study');
+  document.getElementById('tabStats').classList.toggle('active', tab === 'stats');
+  document.getElementById('tabBank').classList.toggle('active', tab === 'bank');
+
+  const quizZone = document.getElementById('startScreen');
+  const quizScreen = document.getElementById('quizScreen');
+  const resultScreen = document.getElementById('resultScreen');
+  const studyScreen = document.getElementById('studyScreen');
+  const statsScreen = document.getElementById('statsScreen');
+  const bankScreen = document.getElementById('bankScreen');
+
+  statsScreen.style.display = 'none';
+  studyScreen.style.display = 'none';
+  bankScreen.style.display = 'none';
+
+  if (tab === 'quiz') {
+    if (quizScreen.style.display === 'block' || resultScreen.style.display === 'block') {
+      // keep current quiz state
+    } else {
+      quizZone.style.display = 'block';
+    }
+  } else if (tab === 'study') {
+    quizZone.style.display = 'none';
+    quizScreen.style.display = 'none';
+    resultScreen.style.display = 'none';
+    studyScreen.style.display = 'block';
+    renderStudy();
+  } else if (tab === 'stats') {
+    quizZone.style.display = 'none';
+    quizScreen.style.display = 'none';
+    resultScreen.style.display = 'none';
+    statsScreen.style.display = 'block';
+    renderStats();
+  } else if (tab === 'bank') {
+    quizZone.style.display = 'none';
+    quizScreen.style.display = 'none';
+    resultScreen.style.display = 'none';
+    bankScreen.style.display = 'block';
+    renderBank();
+  }
+}
+
+// ===================== STUDY MODE =====================
+function renderStudy() {
+  filterStudy();
+}
+
+function filterStudy() {
+  const search = (document.getElementById('studySearch').value || '').toLowerCase();
+  const tag = document.getElementById('studyFilter').value;
+
+  const filtered = allQuestions.filter(q => {
+    const matchTag = !tag || q.tag === tag;
+    const matchSearch = !search ||
+      q.q.toLowerCase().includes(search) ||
+      q.ex.toLowerCase().includes(search) ||
+      q.opts.some(o => o.toLowerCase().includes(search));
+    return matchTag && matchSearch;
+  });
+
+  document.getElementById('studyCountNum').textContent = filtered.length;
+  document.getElementById('noResults').style.display = filtered.length === 0 ? 'block' : 'none';
+
+  const list = document.getElementById('studyList');
+  list.innerHTML = '';
+
+  filtered.forEach((q, i) => {
+    const realIdx = allQuestions.indexOf(q) + 1;
+    const card = document.createElement('div');
+    card.className = 'study-card';
+    card.innerHTML = `
+      <div class="study-card-head" onclick="toggleStudyCard(this)">
+        <div class="study-num">${realIdx}</div>
+        <div class="study-card-body">
+          <div class="study-tag-sm">${q.tag}</div>
+          <div class="study-question">${q.q}</div>
+        </div>
+        <div class="study-toggle">▼</div>
+      </div>
+      <div class="study-answer">
+        <div class="answer-correct">
+          <div class="answer-badge">✓ ĐÁP ÁN</div>
+          <div class="answer-text">${q.opts.find(o => o.startsWith(q.ans))}</div>
+        </div>
+        <div class="all-options">
+          ${q.opts.map(opt => `
+            <div class="opt-row ${opt.startsWith(q.ans) ? 'is-correct' : ''}">
+              <div class="opt-lbl">${opt.charAt(0)}</div>
+              <span>${opt.substring(3)}</span>
+              ${opt.startsWith(q.ans) ? '<span style="margin-left:auto;font-size:11px;color:var(--green);font-weight:800;">✓</span>' : ''}
+            </div>
+          `).join('')}
+        </div>
+        <div class="study-ex"><strong>💡 Căn cứ:</strong> ${q.ex}</div>
+      </div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function toggleStudyCard(head) {
+  const card = head.closest('.study-card');
+  const isOpen = card.classList.contains('open');
+  document.querySelectorAll('.study-card.open').forEach(c => c.classList.remove('open'));
+  if (!isOpen) {
+    card.classList.add('open');
+    setTimeout(() => card.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 50);
+  }
+}
+
+// ===================== LOGIC THI =====================
+let currentQuestions = [];
+let currentIndex = 0;
+let score = 0;
+let userAnswers = [];
+let answered = false;
+
+function shuffle(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startQuiz() {
+  currentQuestions = shuffle(allQuestions).slice(0, 20);
+  currentIndex = 0;
+  score = 0;
+  userAnswers = [];
+  answered = false;
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('quizScreen').style.display = 'block';
+  renderQuestion();
+}
+
+function renderQuestion() {
+  answered = false;
+  const q = currentQuestions[currentIndex];
+  document.getElementById('qNum').textContent = currentIndex + 1;
+  document.getElementById('scoreLive').textContent = `✓ ${score} đúng`;
+  document.getElementById('progressFill').style.width = `${((currentIndex + 1) / 20) * 100}%`;
+  document.getElementById('qTag').textContent = q.tag;
+  document.getElementById('questionText').textContent = `Câu ${currentIndex + 1}: ${q.q}`;
+
+  const list = document.getElementById('optionsList');
+  list.innerHTML = '';
+  const shuffledOpts = shuffle(q.opts.map((o, i) => ({
+    text: o,
+    letter: o.charAt(0)
+  })));
+
+  shuffledOpts.forEach(opt => {
+    const li = document.createElement('li');
+    const btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.innerHTML = `<span class="option-label">${opt.letter}</span><span>${opt.text.substring(3)}</span>`;
+    btn.onclick = () => selectAnswer(btn, opt.letter, q);
+    li.appendChild(btn);
+    list.appendChild(li);
+  });
+
+  document.getElementById('explanationBox').className = 'explanation';
+  document.getElementById('explanationBox').innerHTML = '';
+  const btnNext = document.getElementById('btnNext');
+  btnNext.className = 'btn-next';
+  btnNext.textContent = currentIndex < 19 ? 'Câu tiếp theo →' : 'Xem kết quả 🏆';
+}
+
+function selectAnswer(btn, letter, q) {
+  if (answered) return;
+  answered = true;
+  const isCorrect = letter === q.ans;
+  if (isCorrect) score++;
+  userAnswers.push({ q: q, chosen: letter, correct: isCorrect });
+
+  const allBtns = document.querySelectorAll('.option-btn');
+  allBtns.forEach(b => {
+    b.disabled = true;
+    const lbl = b.querySelector('.option-label').textContent.trim();
+    if (lbl === q.ans) {
+      b.classList.add('correct');
+      b.innerHTML = b.innerHTML + '<span class="mark">✅</span>';
+    } else if (lbl === letter && !isCorrect) {
+      b.classList.add('wrong');
+      b.innerHTML = b.innerHTML + '<span class="mark">❌</span>';
+    } else {
+      b.classList.add('disabled-dim');
+    }
+  });
+
+  const expBox = document.getElementById('explanationBox');
+  expBox.innerHTML = `<strong>💡 Giải thích:</strong> ${q.ex}`;
+  expBox.className = 'explanation show';
+
+  document.getElementById('btnNext').className = 'btn-next show';
+}
+
+function nextQuestion() {
+  currentIndex++;
+  if (currentIndex >= 20) {
+    showResult();
+  } else {
+    renderQuestion();
+  }
+}
+
+function showResult() {
+  document.getElementById('quizScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'block';
+
+  const pct = Math.round((score / 20) * 100);
+  const gpa = ((score / 20) * 10).toFixed(1);
+
+  let emoji, label, sub;
+  if (pct >= 90) { emoji = '🏆'; label = 'XUẤT SẮC!'; sub = 'Bạn nắm vững quy chuẩn xây dựng rất tốt!'; }
+  else if (pct >= 75) { emoji = '🎉'; label = 'GIỎI!'; sub = 'Kiến thức tốt, tiếp tục ôn luyện thêm.'; }
+  else if (pct >= 60) { emoji = '👍'; label = 'KHÁ!'; sub = 'Cần ôn lại một số chủ đề chưa chắc.'; }
+  else if (pct >= 40) { emoji = '📖'; label = 'TRUNG BÌNH'; sub = 'Cần ôn tập thêm nhiều để nắm chắc.'; }
+  else { emoji = '💪'; label = 'CẦN CỐ GẮNG'; sub = 'Hãy đọc lại QCVN/TCVN và thử lại!'; }
+
+  document.getElementById('resultEmoji').textContent = emoji;
+  document.getElementById('resultScore').innerHTML = `${gpa}<span>/10</span>`;
+  document.getElementById('resultLabel').textContent = label;
+  document.getElementById('resultLabel').style.color = pct >= 60 ? 'var(--green)' : pct >= 40 ? 'var(--accent)' : 'var(--red)';
+  document.getElementById('resultSub').textContent = sub;
+  document.getElementById('statCorrect').textContent = score;
+  document.getElementById('statWrong').textContent = 20 - score;
+  document.getElementById('statPct').textContent = pct + '%';
+
+  const reviewList = document.getElementById('reviewList');
+  reviewList.innerHTML = '';
+  userAnswers.forEach((a, i) => {
+    const div = document.createElement('div');
+    div.className = `review-item ${a.correct ? 'correct-item' : 'wrong-item'}`;
+    div.innerHTML = `
+      <div class="review-q">${i + 1}. ${a.q.q}</div>
+      <div class="review-ans">
+        ${a.correct
+          ? `<span class="c">✅ Đúng: ${a.q.opts.find(o => o.startsWith(a.correct))}</span>`
+          : `<span class="w">❌ Bạn chọn: ${a.q.opts.find(o => o.startsWith(a.chosen))}</span> &nbsp;|&nbsp; <span class="c">✓ Đúng: ${a.q.opts.find(o => o.startsWith(a.q.ans))}</span>`}
+      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:5px;">💡 ${a.q.ex}</div>
+    `;
+    reviewList.appendChild(div);
+  });
+
+  // Save to history
+  saveResult(score, 20, gpa, label);
+
+  document.getElementById('resultScreen').scrollIntoView({ behavior: 'smooth' });
+}
+
+// ===================== STATS LOGIC =====================
+const STORAGE_KEY = 'qcvn_quiz_history';
+let currentPeriod = 'week';
+
+function loadHistory() {
+  try {
+    return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  } catch(e) { return []; }
+}
+
+function saveResult(correct, total, gpa, label) {
+  const history = loadHistory();
+  history.push({
+    ts: Date.now(),
+    correct,
+    total,
+    gpa: parseFloat(gpa),
+    pct: Math.round((correct / total) * 100),
+    label
+  });
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+function clearStats() {
+  if (confirm('Xác nhận xóa toàn bộ lịch sử thi? Hành động này không thể khôi phục.')) {
+    localStorage.removeItem(STORAGE_KEY);
+    renderStats();
+  }
+}
+
+function setPeriod(p) {
+  currentPeriod = p;
+  document.querySelectorAll('.stats-period-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('period' + p.charAt(0).toUpperCase() + p.slice(1)).classList.add('active');
+  renderStats();
+}
+
+function fmtDate(ts) {
+  const d = new Date(ts);
+  const pad = n => String(n).padStart(2, '0');
+  return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
+}
+
+function getWeekLabel(ts) {
+  const d = new Date(ts);
+  const startOfYear = new Date(d.getFullYear(), 0, 1);
+  const weekNum = Math.ceil(((d - startOfYear) / 86400000 + startOfYear.getDay() + 1) / 7);
+  return `T${pad2(weekNum)}/${d.getFullYear()}`;
+}
+function getMonthLabel(ts) {
+  const d = new Date(ts);
+  return `Th${d.getMonth()+1}/${d.getFullYear()}`;
+}
+function getYearLabel(ts) {
+  return `${new Date(ts).getFullYear()}`;
+}
+function pad2(n) { return String(n).padStart(2, '0'); }
+
+function groupBy(history, period) {
+  const map = {};
+  history.forEach(r => {
+    let key;
+    if (period === 'week') key = getWeekLabel(r.ts);
+    else if (period === 'month') key = getMonthLabel(r.ts);
+    else key = getYearLabel(r.ts);
+    if (!map[key]) map[key] = [];
+    map[key].push(r);
+  });
+  return map;
+}
+
+function badgeClass(pct) {
+  if (pct >= 90) return 'badge-xuat-sac';
+  if (pct >= 75) return 'badge-gioi';
+  if (pct >= 60) return 'badge-kha';
+  if (pct >= 40) return 'badge-tb';
+  return 'badge-yeu';
+}
+
+// ===================== BANK MODE =====================
+function renderBank() {
+  const tagCounts = {};
+  allQuestions.forEach(q => {
+    tagCounts[q.tag] = (tagCounts[q.tag] || 0) + 1;
+  });
+
+  document.getElementById('bankTotal').textContent = allQuestions.length;
+  const tags = Object.keys(tagCounts);
+  document.getElementById('bankTopics').textContent = tags.length;
+
+  // Tag color map
+  const tagColors = {
+    'Quy hoạch': '#3b82f6',
+    'Mật độ XD': '#8b5cf6',
+    'Khoảng lùi': '#6366f1',
+    'Cấp thoát nước': '#0ea5e9',
+    'Trường mầm non': '#ec4899',
+    'Cây xanh đô thị': '#22c55e',
+    'Trường học': '#f59e0b',
+    'Giao thông': '#f97316',
+    'PCCC': '#ef4444',
+    'Nông thôn': '#84cc16',
+    'Thoát nước': '#06b6d4',
+    'Kết cấu': '#64748b',
+    'Tiểu học': '#7c3aed',
+    'THCS': '#0891b2',
+    'Trụ sở': '#b45309',
+    'Chung cư': '#be123c',
+    'Nhà ở riêng lẻ': '#15803d'
+  };
+
+  const maxCount = Math.max(...Object.values(tagCounts));
+  const sorted = tags.sort((a,b) => tagCounts[b] - tagCounts[a]);
+
+  const list = document.getElementById('bankTagList');
+  list.innerHTML = '';
+
+  sorted.forEach(tag => {
+    const count = tagCounts[tag];
+    const pct = Math.round((count / allQuestions.length) * 100);
+    const barPct = Math.round((count / maxCount) * 100);
+    const color = tagColors[tag] || '#6b7a99';
+
+    const card = document.createElement('div');
+    card.style.cssText = 'background:white;border-radius:14px;padding:16px 18px;box-shadow:0 4px 24px rgba(13,27,42,0.10);border:1.5px solid #dde3f0;cursor:pointer;transition:transform 0.15s;';
+    card.onmouseenter = () => card.style.transform = 'translateY(-2px)';
+    card.onmouseleave = () => card.style.transform = '';
+    card.onclick = () => { switchTab('study'); setTimeout(() => { document.getElementById('studyFilter').value = tag; filterStudy(); }, 50); };
+
+    card.innerHTML = `
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <div style="width:12px;height:12px;border-radius:50%;background:${color};flex-shrink:0;"></div>
+          <span style="font-weight:700;font-size:14px;color:#1a2340;">${tag}</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;">
+          <span style="font-family:'JetBrains Mono',monospace;font-size:22px;font-weight:800;color:${color};">${count}</span>
+          <span style="font-size:12px;color:#6b7a99;font-weight:600;">câu</span>
+          <span style="background:${color}18;color:${color};font-size:11px;font-weight:800;padding:3px 10px;border-radius:20px;letter-spacing:0.5px;">${pct}%</span>
+        </div>
+      </div>
+      <div style="background:#f4f6fb;border-radius:8px;height:8px;overflow:hidden;">
+        <div style="background:${color};height:100%;width:${barPct}%;border-radius:8px;transition:width 0.5s ease;"></div>
+      </div>
+      <div style="margin-top:8px;font-size:11px;color:#6b7a99;font-weight:600;">Nhấn để xem câu hỏi →</div>
+    `;
+    list.appendChild(card);
+  });
+}
+
+function renderStats() {
+  const history = loadHistory();
+  const empty = document.getElementById('statsEmpty');
+  const histList = document.getElementById('statsHistoryList');
+  const histTitle = document.getElementById('statsHistoryTitle');
+  const summaryGrid = document.getElementById('statsSummaryGrid');
+
+  // Summary
+  if (history.length === 0) {
+    summaryGrid.innerHTML = `
+      <div class="sum-box"><div class="sum-val accent">0</div><div class="sum-lbl">Số lần thi</div></div>
+      <div class="sum-box"><div class="sum-val green">—</div><div class="sum-lbl">Điểm TB</div></div>
+      <div class="sum-box"><div class="sum-val blue">—</div><div class="sum-lbl">Điểm cao nhất</div></div>
+      <div class="sum-box"><div class="sum-val">—</div><div class="sum-lbl">Tỉ lệ đúng TB</div></div>
+    `;
+    empty.style.display = 'block';
+    histList.innerHTML = '';
+    histTitle.style.display = 'none';
+    renderChart([], []);
+    return;
+  }
+
+  empty.style.display = 'none';
+  histTitle.style.display = 'block';
+
+  const totalTimes = history.length;
+  const avgGpa = (history.reduce((s,r) => s + r.gpa, 0) / totalTimes).toFixed(1);
+  const maxGpa = Math.max(...history.map(r => r.gpa)).toFixed(1);
+  const avgPct = Math.round(history.reduce((s,r) => s + r.pct, 0) / totalTimes);
+
+  summaryGrid.innerHTML = `
+    <div class="sum-box"><div class="sum-val accent">${totalTimes}</div><div class="sum-lbl">Số lần thi</div></div>
+    <div class="sum-box"><div class="sum-val green">${avgGpa}</div><div class="sum-lbl">Điểm TB</div></div>
+    <div class="sum-box"><div class="sum-val blue">${maxGpa}</div><div class="sum-lbl">Điểm cao nhất</div></div>
+    <div class="sum-box"><div class="sum-val">${avgPct}%</div><div class="sum-lbl">Tỉ lệ đúng TB</div></div>
+  `;
+
+  // Chart data grouped by period
+  const grouped = groupBy(history, currentPeriod);
+  const keys = Object.keys(grouped).sort();
+  const chartLabels = keys.slice(-12); // last 12 periods
+  const chartData = chartLabels.map(k => {
+    const arr = grouped[k];
+    return parseFloat((arr.reduce((s,r) => s + r.gpa, 0) / arr.length).toFixed(1));
+  });
+  renderChart(chartLabels, chartData);
+
+  // History list — newest first
+  histList.innerHTML = '';
+  const sorted = [...history].sort((a,b) => b.ts - a.ts);
+  sorted.forEach((r, i) => {
+    const prev = sorted[i+1];
+    let trend = '';
+    if (prev) {
+      if (r.gpa > prev.gpa) trend = '📈';
+      else if (r.gpa < prev.gpa) trend = '📉';
+      else trend = '➡️';
+    }
+    const div = document.createElement('div');
+    div.className = 'hist-item';
+    div.innerHTML = `
+      <div class="hist-score-badge ${badgeClass(r.pct)}">
+        <div class="gpa">${r.gpa}</div>
+        <div class="outof">/10</div>
+      </div>
+      <div class="hist-info">
+        <div class="hist-datetime">🕐 ${fmtDate(r.ts)}</div>
+        <div class="hist-label">${r.label}</div>
+        <div class="hist-detail">✅ ${r.correct}/${r.total} câu đúng &nbsp;·&nbsp; ${r.pct}%</div>
+      </div>
+      <div class="hist-trend">${trend}</div>
+    `;
+    histList.appendChild(div);
+  });
+}
+
+function renderChart(labels, data) {
+  const canvas = document.getElementById('statsChart');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.parentElement.clientWidth - 24;
+  const H = 180;
+  canvas.width = W;
+  canvas.height = H;
+  ctx.clearRect(0, 0, W, H);
+
+  if (labels.length === 0) {
+    ctx.fillStyle = '#aaa';
+    ctx.font = '13px Be Vietnam Pro, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Chưa có dữ liệu để hiển thị biểu đồ', W/2, H/2);
+    return;
+  }
+
+  const padL = 36, padR = 12, padT = 18, padB = 36;
+  const chartW = W - padL - padR;
+  const chartH = H - padT - padB;
+  const maxVal = 10, minVal = 0;
+
+  // Grid lines
+  const gridLines = [0, 2, 4, 6, 8, 10];
+  ctx.strokeStyle = '#e8edf5';
+  ctx.lineWidth = 1;
+  gridLines.forEach(v => {
+    const y = padT + chartH - (v / maxVal) * chartH;
+    ctx.beginPath(); ctx.moveTo(padL, y); ctx.lineTo(W - padR, y); ctx.stroke();
+    ctx.fillStyle = '#9baabf';
+    ctx.font = '9px JetBrains Mono, monospace';
+    ctx.textAlign = 'right';
+    ctx.fillText(v, padL - 4, y + 3);
+  });
+
+  if (labels.length < 2) {
+    // single dot
+    const x = padL + chartW / 2;
+    const y = padT + chartH - (data[0] / maxVal) * chartH;
+    ctx.fillStyle = '#f0a500';
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#1a2340';
+    ctx.font = 'bold 11px Be Vietnam Pro, sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(data[0], x, y - 10);
+    ctx.fillStyle = '#6b7a99';
+    ctx.font = '10px Be Vietnam Pro, sans-serif';
+    ctx.fillText(labels[0], x, H - 4);
+    return;
+  }
+
+  const step = chartW / (labels.length - 1);
+
+  // Area fill
+  ctx.beginPath();
+  ctx.moveTo(padL, padT + chartH - (data[0] / maxVal) * chartH);
+  data.forEach((v, i) => {
+    ctx.lineTo(padL + i * step, padT + chartH - (v / maxVal) * chartH);
+  });
+  ctx.lineTo(padL + (data.length-1)*step, padT + chartH);
+  ctx.lineTo(padL, padT + chartH);
+  ctx.closePath();
+  const grad = ctx.createLinearGradient(0, padT, 0, padT + chartH);
+  grad.addColorStop(0, 'rgba(240,165,0,0.22)');
+  grad.addColorStop(1, 'rgba(240,165,0,0.01)');
+  ctx.fillStyle = grad;
+  ctx.fill();
+
+  // Line
+  ctx.beginPath();
+  ctx.strokeStyle = '#f0a500';
+  ctx.lineWidth = 2.5;
+  ctx.lineJoin = 'round';
+  data.forEach((v, i) => {
+    const x = padL + i * step;
+    const y = padT + chartH - (v / maxVal) * chartH;
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  // Dots + labels
+  data.forEach((v, i) => {
+    const x = padL + i * step;
+    const y = padT + chartH - (v / maxVal) * chartH;
+    ctx.fillStyle = v >= 6 ? '#1db87c' : v >= 4 ? '#f0a500' : '#e53e3e';
+    ctx.strokeStyle = 'white';
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(x, y, 5, 0, Math.PI*2); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#1a2340';
+    ctx.font = 'bold 10px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(v, x, y - 9);
+
+    // x-axis labels
+    ctx.fillStyle = '#6b7a99';
+    ctx.font = '9px Be Vietnam Pro, sans-serif';
+    ctx.fillText(labels[i], x, H - 6);
+  });
+}
+</script>
+</body>
+</html>
